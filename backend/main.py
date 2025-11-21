@@ -6,7 +6,7 @@ import models, schemas, crud
 from database import SessionLocal, engine
 import time
 
-from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners, seller, products
+from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners, seller, products, stores
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
@@ -37,7 +37,7 @@ def startup_db_client():
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"], # TODO: In production, replace with specific frontend domain e.g. ["https://bolsifyshop.com"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,6 +55,7 @@ app.include_router(admin.router)
 app.include_router(banners.router)
 app.include_router(seller.router)
 app.include_router(products.router)
+app.include_router(stores.router)
 
 @app.get("/")
 def read_root():

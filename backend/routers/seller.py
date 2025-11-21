@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from typing import List
 import models, schemas
 from database import get_db
-from routers.auth import get_current_user
+from database import get_db
+from routers.auth import get_current_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from datetime import timedelta
+import crud
 
 router = APIRouter(
     prefix="/seller",
@@ -30,7 +33,26 @@ def register_store(store: schemas.StoreCreate, db: Session = Depends(get_db), cu
     
     db.commit()
     db.refresh(db_store)
+    db.refresh(db_store)
     return db_store
+
+@router.post("/onboard", response_model=schemas.Token)
+def onboard_seller(onboarding_data: schemas.SellerOnboardingRequest, db: Session = Depends(get_db)):
+    # Check if user exists
+    db_user = crud.get_user_by_email(db, email=onboarding_data.user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Create user and store
+    user, store = crud.create_seller_and_store(db, onboarding_data.user, onboarding_data.store)
+    
+    # Create token
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.get("/store", response_model=schemas.Store)
 def get_seller_store(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):

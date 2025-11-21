@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import Optional
+from datetime import datetime
 import models, schemas
 from passlib.context import CryptContext
 
@@ -14,7 +15,36 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    db.refresh(db_user)
     return db_user
+
+def create_seller_and_store(db: Session, user: schemas.UserCreate, store: schemas.StoreCreate):
+    # 1. Create User
+    hashed_password = pwd_context.hash(user.password)
+    db_user = models.User(
+        email=user.email, 
+        full_name=user.full_name, 
+        hashed_password=hashed_password,
+        role="seller"
+    )
+    db.add(db_user)
+    db.flush() # Get ID
+    
+    # 2. Create Store
+    db_store = models.Store(
+        name=store.name,
+        description=store.description,
+        logo_url=store.logo_url,
+        owner_id=db_user.id,
+        created_at=datetime.utcnow().isoformat()
+    )
+    db.add(db_store)
+    
+    # 3. Commit
+    db.commit()
+    db.refresh(db_user)
+    db.refresh(db_store)
+    return db_user, db_store
 
 def get_products(
     db: Session, 

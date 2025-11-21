@@ -64,6 +64,10 @@ class Store(StoreBase):
     class Config:
         from_attributes = True
 
+class SellerOnboardingRequest(BaseModel):
+    user: UserCreate
+    store: StoreCreate
+
 # --- Auth Schemas ---
 class Token(BaseModel):
     access_token: str

@@ -2,8 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Store } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function SellerLayout({
@@ -14,18 +14,21 @@ export default function SellerLayout({
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
-    // Basic protection (can be enhanced with middleware or useEffect redirect)
-    if (user && user.role !== "seller" && user.role !== "admin") {
-        // In a real app, redirect here. For now, maybe show a warning or return null.
-        // returning null might cause hydration issues if not handled carefully.
-        // Let's assume middleware handles strict protection, or we render a "Not Authorized" message.
-    }
+    const router = useRouter();
+
+    React.useEffect(() => {
+        if (user && user.role !== "seller" && user.role !== "admin") {
+            router.push("/");
+        }
+    }, [user, router]);
+
 
     const navItems = [
         { name: "Dashboard", href: "/seller", icon: LayoutDashboard },
         { name: "Productos", href: "/seller/products", icon: Package },
         { name: "Pedidos", href: "/seller/orders", icon: ShoppingCart },
         { name: "Configuración", href: "/seller/settings", icon: Settings },
+        { name: "Volver a la Tienda", href: "/", icon: Store },
     ];
 
     return (
@@ -45,8 +48,8 @@ export default function SellerLayout({
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive
-                                        ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
-                                        : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                                    ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
+                                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                                     }`}
                             >
                                 <item.icon className="w-5 h-5 mr-3" />

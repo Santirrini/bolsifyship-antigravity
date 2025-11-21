@@ -143,6 +143,11 @@ export default function Navbar() {
                   <Link href="/profile" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     Hola, {user.full_name || user.email}
                   </Link>
+                  {user.role === 'seller' && (
+                    <Link href="/seller" className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
+                      Panel de Vendedor
+                    </Link>
+                  )}
                   <button
                     onClick={logout}
                     className="text-sm font-medium text-red-600 hover:text-red-700"

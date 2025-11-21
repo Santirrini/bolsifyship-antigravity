@@ -82,14 +82,14 @@ export default function SellerRegisterPage() {
             });
 
             if (!storeRes.ok) {
-                // Optional: Handle store creation failure, but user is already created.
-                // For now, we proceed as the user can retry in dashboard or we can show a warning.
-                console.error("Store creation failed", await storeRes.text());
+                const errorText = await storeRes.text();
+                console.error("Store creation failed", errorText);
+                throw new Error(`Error al crear la tienda: ${errorText}`);
             }
 
             // Let's just log the user in for now.
             login(token);
-            // The AuthContext will handle the redirect to /seller/dashboard based on role.
+            // The AuthContext will handle the redirect to /seller based on role.
 
         } catch (err: any) {
             setError(err.message);

@@ -34,62 +34,33 @@ export default function SellerRegisterPage() {
         }
 
         try {
-            // 1. Register User as Seller
-            const registerRes = await fetch('http://localhost:8000/auth/register', {
+            // Unified Onboarding (Hot Swap Identity)
+            const onboardRes = await fetch('http://localhost:8000/seller/onboard', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                    full_name: formData.full_name,
-                    role: 'seller' // Important: Register as seller
+                    user: {
+                        email: formData.email,
+                        password: formData.password,
+                        full_name: formData.full_name
+                    },
+                    store: {
+                        name: formData.store_name,
+                        description: formData.store_description
+                    }
                 }),
             });
 
-            if (!registerRes.ok) {
-                const data = await registerRes.json();
-                throw new Error(data.detail || 'Error al registrar usuario');
+            if (!onboardRes.ok) {
+                const data = await onboardRes.json();
+                throw new Error(data.detail || 'Error al crear la tienda y usuario');
             }
 
-            // 2. Login to get token
-            const loginFormData = new FormData();
-            loginFormData.append('username', formData.email);
-            loginFormData.append('password', formData.password);
+            const data = await onboardRes.json();
+            const token = data.access_token;
 
-            const loginRes = await fetch('http://localhost:8000/auth/token', {
-                method: 'POST',
-                body: loginFormData,
-            });
-
-            if (!loginRes.ok) {
-                throw new Error('Error al iniciar sesión automáticamente');
-            }
-
-            const loginData = await loginRes.json();
-            const token = loginData.access_token;
-
-            // 3. Create Store
-            const storeRes = await fetch('http://localhost:8000/seller/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    name: formData.store_name,
-                    description: formData.store_description
-                }),
-            });
-
-            if (!storeRes.ok) {
-                const errorText = await storeRes.text();
-                console.error("Store creation failed", errorText);
-                throw new Error(`Error al crear la tienda: ${errorText}`);
-            }
-
-            // Let's just log the user in for now.
+            // Login with new seller credentials (overwrites any existing session)
             login(token);
-            // The AuthContext will handle the redirect to /seller based on role.
 
         } catch (err: any) {
             setError(err.message);

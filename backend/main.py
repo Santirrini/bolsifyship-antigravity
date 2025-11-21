@@ -6,7 +6,7 @@ import models, schemas, crud
 from database import SessionLocal, engine
 import time
 
-from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners
+from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners, seller
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
@@ -19,9 +19,18 @@ app = FastAPI()
 def startup_db_client():
     try:
         with engine.connect() as connection:
-            connection.execute(text("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"))
-    except OperationalError:
-        pass # Column likely already exists
+            try:
+                connection.execute(text("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"))
+            except OperationalError:
+                pass
+            try:
+                connection.execute(text("ALTER TABLE users ADD COLUMN role STRING DEFAULT 'customer'"))
+            except OperationalError:
+                pass
+            try:
+                connection.execute(text("ALTER TABLE products ADD COLUMN store_id INTEGER DEFAULT NULL"))
+            except OperationalError:
+                pass
     except Exception as e:
         print(f"Migration error: {e}")
 
@@ -44,6 +53,7 @@ app.include_router(categories.router)
 app.include_router(offers.router)
 app.include_router(admin.router)
 app.include_router(banners.router)
+app.include_router(seller.router)
 
 @app.get("/")
 def read_root():

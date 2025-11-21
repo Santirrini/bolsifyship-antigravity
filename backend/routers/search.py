@@ -27,6 +27,7 @@ def search_products(
     min_rating: Optional[float] = None,
     sort_by: Optional[str] = None,
     on_sale: bool = False,
+    store_id: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
     return crud.get_products(
@@ -37,7 +38,8 @@ def search_products(
         max_price=max_price,
         min_rating=min_rating,
         sort_by=sort_by,
-        on_sale=on_sale
+        on_sale=on_sale,
+        store_id=store_id
     )
 
 @router.get("/{product_id}", response_model=schemas.Product)

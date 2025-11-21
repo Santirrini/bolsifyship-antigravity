@@ -89,6 +89,7 @@ export default function Navbar() {
                 <Link href="/search" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Explorar</Link>
                 <Link href="/categories" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Categorías</Link>
                 <Link href="/offers" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Ofertas</Link>
+                <Link href="/business" className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">Vender en Bolsifyshop</Link>
               </div>
             </div>
 

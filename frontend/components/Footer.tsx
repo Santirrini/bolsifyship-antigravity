@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Footer() {
     return (
@@ -38,6 +39,7 @@ export default function Footer() {
                             <li><a href="#" className="hover:text-blue-400 transition-colors">Blog</a></li>
                             <li><a href="#" className="hover:text-blue-400 transition-colors">Contacto</a></li>
                             <li><a href="#" className="hover:text-blue-400 transition-colors">Mapa del Sitio</a></li>
+                            <li><Link href="/business" className="hover:text-blue-400 transition-colors font-medium text-indigo-400">Vender en Bolsifyshop</Link></li>
                         </ul>
                     </div>
 

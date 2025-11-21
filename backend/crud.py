@@ -24,7 +24,8 @@ def get_products(
     max_price: Optional[float] = None,
     min_rating: Optional[float] = None,
     sort_by: Optional[str] = None,
-    on_sale: bool = False
+    on_sale: bool = False,
+    store_id: Optional[int] = None
 ):
     db_query = db.query(models.Product)
     
@@ -45,6 +46,9 @@ def get_products(
         
     if on_sale:
         db_query = db_query.filter(models.Product.discount_price.isnot(None))
+
+    if store_id is not None:
+        db_query = db_query.filter(models.Product.store_id == store_id)
         
     # Sorting
     if sort_by == "price_asc":

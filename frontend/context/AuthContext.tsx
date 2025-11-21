@@ -8,6 +8,8 @@ interface User {
     email: string;
     full_name: string;
     is_active: boolean;
+    is_admin: number;
+    role: string;
 }
 
 interface AuthContextType {
@@ -61,7 +63,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .then(res => res.json())
             .then(userData => {
                 setUser(userData);
-                router.push('/');
+                if (userData.role === 'admin') {
+                    router.push('/admin/dashboard');
+                } else if (userData.role === 'seller') {
+                    router.push('/seller/dashboard');
+                } else {
+                    router.push('/');
+                }
             })
             .catch(err => console.error("Login fetch user failed", err));
     };

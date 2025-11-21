@@ -16,6 +16,7 @@ class Product(Base):
     image = Column(String, nullable=True)
     season = Column(String, nullable=True, index=True) # "christmas", "halloween", "summer", etc.
     sales_count = Column(Integer, default=0, index=True) # To track popularity/clearance status
+    store_id = Column(Integer, index=True, nullable=True) # Null for internal products
 
 class User(Base):
     __tablename__ = "users"
@@ -24,8 +25,19 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     full_name = Column(String)
     hashed_password = Column(String)
-    is_active = Column(Integer, default=1) # 1 for active, 0 for inactive (using Integer for SQLite boolean compatibility if needed, though Boolean works too)
+    is_active = Column(Integer, default=1) # 1 for active, 0 for inactive
     is_admin = Column(Integer, default=0) # 0 for regular user, 1 for admin
+    role = Column(String, default="customer") # "admin", "seller", "customer"
+
+class Store(Base):
+    __tablename__ = "stores"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    description = Column(String, nullable=True)
+    owner_id = Column(Integer, index=True) # User ID of the seller
+    logo_url = Column(String, nullable=True)
+    created_at = Column(String) # ISO format
 
 class CartItem(Base):
     __tablename__ = "cart_items"

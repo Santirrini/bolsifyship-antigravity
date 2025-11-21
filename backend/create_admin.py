@@ -20,6 +20,8 @@ def create_admin_user():
             print(f"User {email} already exists. Updating to admin...")
             existing_user.is_admin = 1
             existing_user.is_active = 1
+            existing_user.role = "admin"
+            existing_user.hashed_password = pwd_context.hash(password)
             db.commit()
             print("User updated successfully.")
             return
@@ -32,7 +34,8 @@ def create_admin_user():
             hashed_password=hashed_password,
             full_name="System Admin",
             is_admin=1,
-            is_active=1
+            is_active=1,
+            role="admin"
         )
         
         db.add(admin_user)

@@ -64,6 +64,9 @@ class Store(StoreBase):
     class Config:
         from_attributes = True
 
+class ProductDetail(Product):
+    store: Optional[Store] = None
+
 class SellerOnboardingRequest(BaseModel):
     user: UserCreate
     store: StoreCreate

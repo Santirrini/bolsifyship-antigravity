@@ -6,7 +6,7 @@ import models, schemas, crud
 from database import SessionLocal, engine
 import time
 
-from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners, seller
+from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners, seller, products
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
@@ -54,6 +54,7 @@ app.include_router(offers.router)
 app.include_router(admin.router)
 app.include_router(banners.router)
 app.include_router(seller.router)
+app.include_router(products.router)
 
 @app.get("/")
 def read_root():
@@ -66,12 +67,7 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/products/{product_id}", response_model=schemas.Product)
-def get_product(product_id: int, db: Session = Depends(get_db)):
-    product = db.query(models.Product).filter(models.Product.id == product_id).first()
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+# Legacy endpoint removed, use /products/{id} instead
 
 class CompareRequest(schemas.BaseModel):
     product_ids: List[str]

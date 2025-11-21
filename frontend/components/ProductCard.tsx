@@ -2,6 +2,7 @@ import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useUI } from '@/context/UIContext';
+import Link from 'next/link';
 
 interface ProductProps {
     id: number;
@@ -29,7 +30,9 @@ export default function ProductCard({
     const { openCart, openWishlist } = useUI();
     const isWishlisted = isInWishlist(id);
 
-    const handleToggleWishlist = () => {
+    const handleToggleWishlist = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (isWishlisted) {
             removeFromWishlist(id);
         } else {
@@ -38,7 +41,9 @@ export default function ProductCard({
         }
     };
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
         addToCart({ id, name: title, price, image });
         openCart();
     };
@@ -65,17 +70,19 @@ export default function ProductCard({
 
             {/* Image */}
             <div className="relative h-64 overflow-hidden bg-zinc-50 dark:bg-neutral-800">
-                <img
-                    src={image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E'}
-                    alt={title}
-                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
-                />
+                <Link href={`/product/${id}`} className="block w-full h-full">
+                    <img
+                        src={image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E'}
+                        alt={title}
+                        className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+                    />
+                </Link>
 
                 {/* Quick Add Button */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none">
                     <button
                         onClick={handleAddToCart}
-                        className="w-full bg-white dark:bg-neutral-800 text-gray-900 dark:text-white font-bold py-3 rounded-xl shadow-lg hover:bg-gray-50 dark:hover:bg-neutral-700 flex items-center justify-center gap-2 transition-colors"
+                        className="w-full bg-white dark:bg-neutral-800 text-gray-900 dark:text-white font-bold py-3 rounded-xl shadow-lg hover:bg-gray-50 dark:hover:bg-neutral-700 flex items-center justify-center gap-2 transition-colors pointer-events-auto"
                     >
                         <ShoppingCart className="w-5 h-5" />
                         Añadir al Carrito
@@ -95,9 +102,11 @@ export default function ProductCard({
                     <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">({reviews})</span>
                 </div>
 
-                <h3 className="font-semibold text-zinc-900 dark:text-white mb-2 line-clamp-2 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
-                    {title}
-                </h3>
+                <Link href={`/product/${id}`} className="block">
+                    <h3 className="font-semibold text-zinc-900 dark:text-white mb-2 line-clamp-2 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
+                        {title}
+                    </h3>
+                </Link>
 
                 <div className="flex items-baseline gap-2">
                     <span className="text-xl font-bold text-gray-900 dark:text-white">${price.toFixed(2)}</span>

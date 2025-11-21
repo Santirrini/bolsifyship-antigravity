@@ -8,7 +8,8 @@ import {
     ShoppingCart,
     Users,
     Settings,
-    LogOut
+    LogOut,
+    Image as ImageIcon
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -19,6 +20,7 @@ const Sidebar = () => {
         { name: "Products", href: "/admin/products", icon: Package },
         { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
         { name: "Users", href: "/admin/users", icon: Users },
+        { name: "Banners", href: "/admin/banners", icon: ImageIcon },
         // { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
@@ -38,8 +40,8 @@ const Sidebar = () => {
                             key={link.href}
                             href={link.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
-                                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white"
                                 }`}
                         >
                             <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`} />

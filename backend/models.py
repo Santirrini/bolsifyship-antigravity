@@ -87,3 +87,17 @@ class PaymentMethod(Base):
     expiry_date = Column(String) # MM/YY
     card_holder = Column(String)
     is_default = Column(Integer, default=0)
+
+class Banner(Base):
+    __tablename__ = "banners"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    subtitle = Column(String, nullable=True)
+    highlight_text = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    image_url = Column(String)
+    link_url = Column(String, nullable=True)
+    position = Column(String, default="hero") # "hero", "home_middle", etc.
+    is_active = Column(Integer, default=1)
+    order = Column(Integer, default=0)

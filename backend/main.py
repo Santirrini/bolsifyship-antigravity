@@ -6,7 +6,7 @@ import models, schemas, crud
 from database import SessionLocal, engine
 import time
 
-from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders
+from routers import auth, search, cart, wishlist, categories, offers, admin, users, orders, banners
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
@@ -43,6 +43,7 @@ app.include_router(wishlist.router)
 app.include_router(categories.router)
 app.include_router(offers.router)
 app.include_router(admin.router)
+app.include_router(banners.router)
 
 @app.get("/")
 def read_root():

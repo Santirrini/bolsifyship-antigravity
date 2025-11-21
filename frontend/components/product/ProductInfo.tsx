@@ -38,7 +38,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                     )}
                 </div>
 
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
                     {product.name}
                 </h1>
 
@@ -48,13 +48,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                             <Star
                                 key={i}
                                 className={`h-5 w-5 ${i < Math.floor(product.rating)
-                                        ? 'fill-yellow-400 text-yellow-400'
-                                        : 'fill-gray-200 text-gray-200'
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'fill-gray-200 text-gray-200'
                                     }`}
                             />
                         ))}
                     </div>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-muted-foreground">
                         {product.rating} ({product.reviews} reviews)
                     </span>
                 </div>
@@ -62,7 +62,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
             <div className="space-y-2">
                 <div className="flex items-baseline gap-4">
-                    <span className="text-4xl font-bold tracking-tight text-gray-900">
+                    <span className="text-4xl font-bold tracking-tight text-foreground">
                         ${product.price.toFixed(2)}
                     </span>
                     {product.discount_price && (
@@ -71,16 +71,16 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                         </span>
                     )}
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                     Includes taxes and fees. Free shipping on orders over $50.
                 </p>
             </div>
 
-            <div className="prose prose-base text-gray-600 leading-relaxed">
+            <div className="prose prose-base text-muted-foreground leading-relaxed">
                 <p>{product.description}</p>
             </div>
 
-            <div className="flex flex-col gap-4 sm:flex-row pt-6 border-t border-gray-100">
+            <div className="flex flex-col gap-4 sm:flex-row pt-6 border-t border-border">
                 <button
                     onClick={handleAddToCart}
                     disabled={isAdding}
@@ -90,21 +90,21 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                     {isAdding ? 'Added to Cart' : 'Add to Cart'}
                 </button>
                 <button
-                    className="flex items-center justify-center rounded-xl border-2 border-gray-200 px-6 py-4 hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-[0.98]"
+                    className="flex items-center justify-center rounded-xl border-2 border-border px-6 py-4 hover:bg-accent hover:border-accent-foreground/20 transition-all active:scale-[0.98]"
                     aria-label="Add to wishlist"
                 >
-                    <Heart className="h-6 w-6 text-gray-600" />
+                    <Heart className="h-6 w-6 text-muted-foreground" />
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
+            <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-green-500" />
-                    <span className="font-medium text-gray-900">In Stock</span>
+                    <span className="font-medium text-foreground">In Stock</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
-                    <span className="font-medium text-gray-900">Fast Delivery</span>
+                    <span className="font-medium text-foreground">Fast Delivery</span>
                 </div>
             </div>
         </div>

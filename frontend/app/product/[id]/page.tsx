@@ -23,7 +23,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     ];
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-background">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="mb-8">
                     <Breadcrumbs items={breadcrumbs} />
@@ -40,8 +40,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                         <ProductInfo product={product} />
 
                         {product.store && (
-                            <div className="border-t border-gray-100 pt-8">
-                                <h3 className="text-sm font-medium text-gray-900 mb-4">Sold and shipped by</h3>
+                            <div className="border-t border-border pt-8">
+                                <h3 className="text-sm font-medium text-foreground mb-4">Sold and shipped by</h3>
                                 <StoreInfoCard store={product.store} />
                             </div>
                         )}

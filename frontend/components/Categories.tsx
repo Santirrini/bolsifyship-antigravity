@@ -35,22 +35,22 @@ export default function Categories() {
                     </a>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6">
+                <div className="flex overflow-x-auto snap-x pb-8 md:pb-0 md:grid md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 no-scrollbar">
                     {categories.map((cat, idx) => (
                         <Link
                             href={`/search?category=${cat.name}`}
                             key={idx}
-                            className="group relative flex flex-col items-center p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-zinc-200 dark:border-neutral-800 shadow-sm hover:shadow-md hover:border-zinc-300 dark:hover:border-neutral-700 transition-all duration-300 cursor-pointer hover:-translate-y-1"
+                            className="snap-center min-w-[140px] md:min-w-0 group relative flex flex-col items-center p-6 rounded-2xl bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                         >
-                            <div className={`w-16 h-16 ${cat.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-all duration-300`}>
-                                <cat.icon className="w-8 h-8" />
+                            <div className="w-16 h-16 rounded-2xl bg-white dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors duration-300 shadow-sm">
+                                <cat.icon className="w-8 h-8 text-gray-600 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300" strokeWidth={1.5} />
                             </div>
-                            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                                 {cat.name}
                             </span>
 
                             {/* Hover Gradient Overlay */}
-                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-zinc-100/50 to-transparent dark:from-neutral-800/50 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         </Link>
                     ))}
                 </div>

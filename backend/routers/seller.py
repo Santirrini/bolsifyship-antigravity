@@ -123,7 +123,7 @@ def create_seller_product(product: schemas.ProductCreate, db: Session = Depends(
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
     
-    db_product = models.Product(**product.dict(), store_id=store.id)
+    db_product = models.Product(**product.dict(exclude={'store_id'}), store_id=store.id)
     db.add(db_product)
     db.commit()
     db.refresh(db_product)

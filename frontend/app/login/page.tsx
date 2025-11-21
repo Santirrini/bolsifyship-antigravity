@@ -32,7 +32,7 @@ export default function LoginPage() {
             }
 
             const data = await res.json();
-            login(data.access_token);
+            await login(data.access_token);
         } catch (err) {
             setError('Invalid email or password');
         } finally {

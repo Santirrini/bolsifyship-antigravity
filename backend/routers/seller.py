@@ -21,8 +21,13 @@ def register_store(store: schemas.StoreCreate, db: Session = Depends(get_db), cu
     if existing_store:
         raise HTTPException(status_code=400, detail="User already has a store")
     
+    from datetime import datetime
     # Create store
-    db_store = models.Store(**store.dict(), owner_id=current_user.id)
+    db_store = models.Store(
+        **store.dict(), 
+        owner_id=current_user.id,
+        created_at=datetime.utcnow().isoformat()
+    )
     db.add(db_store)
     
     # Update user role to seller
@@ -32,7 +37,6 @@ def register_store(store: schemas.StoreCreate, db: Session = Depends(get_db), cu
     db.add(user)
     
     db.commit()
-    db.refresh(db_store)
     db.refresh(db_store)
     return db_store
 

@@ -14,7 +14,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (token: string) => void;
+    login: (token: string) => Promise<void>;
     logout: () => void;
     loading: boolean;
 }
@@ -52,16 +52,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkUser();
     }, []);
 
-    const login = (token: string) => {
+    const login = async (token: string) => {
         localStorage.setItem('token', token);
         // Refresh user data immediately
-        fetch('http://localhost:8000/auth/users/me', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(res => res.json())
-            .then(userData => {
+        try {
+            const res = await fetch('http://localhost:8000/auth/users/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (res.ok) {
+                const userData = await res.json();
                 setUser(userData);
                 if (userData.role === 'admin') {
                     router.push('/admin');
@@ -70,8 +72,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 } else {
                     router.push('/');
                 }
-            })
-            .catch(err => console.error("Login fetch user failed", err));
+            } else {
+                console.error("Failed to fetch user data after login");
+            }
+        } catch (err) {
+            console.error("Login fetch user failed", err);
+        }
     };
 
     const logout = () => {

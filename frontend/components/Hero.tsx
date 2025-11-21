@@ -96,7 +96,7 @@ export default function Hero() {
                     <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 max-w-4xl mx-auto">
                         <div className={`transition-all duration-1000 delay-300 transform ${index === current ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                             {slide.subtitle && (
-                                <span className="inline-block py-1 px-3 rounded-full bg-blue-600/30 border border-blue-500/50 text-blue-300 text-sm font-semibold mb-6 backdrop-blur-sm">
+                                <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-semibold mb-6">
                                     {slide.subtitle}
                                 </span>
                             )}
@@ -114,11 +114,11 @@ export default function Hero() {
                                 </p>
                             )}
                             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
-                                <Link href={slide.link_url || "/search"} className="group bg-white text-gray-900 hover:bg-gray-100 font-bold py-3 px-8 rounded-full transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg shadow-white/10">
+                                <Link href={slide.link_url || "/search"} className="group bg-white text-zinc-900 hover:bg-zinc-100 font-bold py-3 px-8 rounded-full transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg">
                                     Comprar Ahora
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
-                                <Link href="/search" className="bg-transparent border-2 border-white/30 hover:bg-white/10 text-white font-semibold py-3 px-8 rounded-full transition-all backdrop-blur-sm flex items-center justify-center">
+                                <Link href="/search" className="bg-transparent border-2 border-white/40 hover:bg-white/20 text-white font-semibold py-3 px-8 rounded-full transition-all backdrop-blur-sm flex items-center justify-center">
                                     Ver Catálogo
                                 </Link>
                             </div>
@@ -150,7 +150,7 @@ export default function Hero() {
                                 key={idx}
                                 onClick={() => setCurrent(idx)}
                                 className={`h-3 rounded-full cursor-pointer transition-all duration-300 ${current === idx
-                                    ? 'bg-blue-500 ring-4 ring-blue-500/30 w-8'
+                                    ? 'bg-white ring-4 ring-white/30 w-8'
                                     : 'bg-white/50 hover:bg-white w-3'
                                     }`}
                             ></div>

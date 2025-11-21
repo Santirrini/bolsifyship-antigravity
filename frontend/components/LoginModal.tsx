@@ -56,7 +56,7 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
                 }
 
                 const data = await res.json();
-                login(data.access_token);
+                await login(data.access_token);
                 onClose();
             } else {
                 if (formData.password !== formData.confirmPassword) {
@@ -90,7 +90,7 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
 
                 if (loginRes.ok) {
                     const loginData = await loginRes.json();
-                    login(loginData.access_token);
+                    await login(loginData.access_token);
                     onClose();
                 } else {
                     setView('login');

@@ -55,6 +55,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     user = crud.get_user_by_email(db, email=token_data.email)
     if user is None:
         raise credentials_exception
+    
+    # Auto-detect if user is a seller by checking if they own a store
+    # Use models.Store directly (models is imported at module level)
+    store = db.query(models.Store).filter(models.Store.owner_id == user.id).first()
+    
+    # If user has a store but role is not seller, update it
+    if store and user.role != "seller":
+        user.role = "seller"
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    
     return user
 
 @router.post("/register", response_model=schemas.User)

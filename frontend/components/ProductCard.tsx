@@ -44,7 +44,7 @@ export default function ProductCard({
     };
 
     return (
-        <div className="group bg-white dark:bg-neutral-900 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-neutral-800 overflow-hidden relative">
+        <div className="group bg-white dark:bg-neutral-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-zinc-200 dark:border-neutral-800 overflow-hidden relative">
             {/* Tag */}
             {tag && (
                 <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
@@ -55,16 +55,16 @@ export default function ProductCard({
             {/* Wishlist Button */}
             <button
                 onClick={handleToggleWishlist}
-                className={`absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full transition-colors z-10 transform translate-y-2 group-hover:translate-y-0 duration-300 ${isWishlisted
-                    ? 'bg-red-50 text-red-500 opacity-100'
-                    : 'bg-white/80 dark:bg-black/50 text-gray-400 hover:text-red-500 hover:bg-white dark:hover:bg-neutral-800 opacity-0 group-hover:opacity-100'
+                className={`absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full transition-all z-10 transform translate-y-2 group-hover:translate-y-0 duration-300 ${isWishlisted
+                    ? 'bg-red-50 dark:bg-red-950/50 text-red-500 opacity-100'
+                    : 'bg-white/80 dark:bg-black/50 text-zinc-400 hover:text-red-500 hover:bg-white dark:hover:bg-neutral-800 opacity-0 group-hover:opacity-100'
                     }`}
             >
                 <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
             </button>
 
             {/* Image */}
-            <div className="relative h-64 overflow-hidden bg-gray-100 dark:bg-neutral-800">
+            <div className="relative h-64 overflow-hidden bg-zinc-50 dark:bg-neutral-800">
                 <img
                     src={image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E'}
                     alt={title}
@@ -95,7 +95,7 @@ export default function ProductCard({
                     <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">({reviews})</span>
                 </div>
 
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <h3 className="font-semibold text-zinc-900 dark:text-white mb-2 line-clamp-2 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
                     {title}
                 </h3>
 

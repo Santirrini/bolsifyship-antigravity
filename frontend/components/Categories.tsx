@@ -2,14 +2,14 @@ import { Monitor, Smartphone, Tv, Home, Watch, Headphones, Camera, Gamepad } fro
 import Link from 'next/link';
 
 const categories = [
-    { name: 'Electrónica', icon: Monitor, color: 'bg-blue-100 text-blue-600' },
-    { name: 'Móviles', icon: Smartphone, color: 'bg-purple-100 text-purple-600' },
-    { name: 'Televisores', icon: Tv, color: 'bg-pink-100 text-pink-600' },
-    { name: 'Hogar', icon: Home, color: 'bg-green-100 text-green-600' },
-    { name: 'Relojes', icon: Watch, color: 'bg-orange-100 text-orange-600' },
-    { name: 'Audio', icon: Headphones, color: 'bg-red-100 text-red-600' },
-    { name: 'Cámaras', icon: Camera, color: 'bg-indigo-100 text-indigo-600' },
-    { name: 'Gaming', icon: Gamepad, color: 'bg-yellow-100 text-yellow-600' },
+    { name: 'Electrónica', icon: Monitor, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Móviles', icon: Smartphone, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Televisores', icon: Tv, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Hogar', icon: Home, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Relojes', icon: Watch, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Audio', icon: Headphones, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Cámaras', icon: Camera, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
+    { name: 'Gaming', icon: Gamepad, color: 'bg-zinc-100 text-zinc-700 dark:bg-neutral-800 dark:text-zinc-300' },
 ];
 
 export default function Categories() {
@@ -29,7 +29,7 @@ export default function Categories() {
                             Explora nuestras colecciones más visitadas
                         </p>
                     </div>
-                    <a href="#" className="group flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                    <a href="#" className="group flex items-center text-zinc-900 dark:text-zinc-100 font-semibold hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">
                         Ver todas
                         <span className="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
                     </a>
@@ -40,17 +40,17 @@ export default function Categories() {
                         <Link
                             href={`/search?category=${cat.name}`}
                             key={idx}
-                            className="group relative flex flex-col items-center p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 shadow-sm hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-900/30 transition-all duration-300 cursor-pointer hover:-translate-y-2"
+                            className="group relative flex flex-col items-center p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-zinc-200 dark:border-neutral-800 shadow-sm hover:shadow-md hover:border-zinc-300 dark:hover:border-neutral-700 transition-all duration-300 cursor-pointer hover:-translate-y-1"
                         >
-                            <div className={`w-16 h-16 ${cat.color} bg-opacity-10 dark:bg-opacity-20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm`}>
+                            <div className={`w-16 h-16 ${cat.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-all duration-300`}>
                                 <cat.icon className="w-8 h-8" />
                             </div>
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
                                 {cat.name}
                             </span>
 
                             {/* Hover Gradient Overlay */}
-                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-zinc-100/50 to-transparent dark:from-neutral-800/50 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         </Link>
                     ))}
                 </div>

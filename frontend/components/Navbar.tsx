@@ -1,21 +1,23 @@
 'use client';
 
-import { ShoppingBag, Search, Menu, User, Heart } from 'lucide-react';
+import { ShoppingBag, Search, Menu, Heart, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import LoginModal from './LoginModal';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useUI } from '@/context/UIContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import UserMenu from './UserMenu';
 
 export default function Navbar() {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false); // New state for mobile search
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
   const { openCart, openWishlist, openLoginModal, isLoginOpen, closeLoginModal, authView } = useUI();
@@ -85,11 +87,26 @@ export default function Navbar() {
 
               {/* Desktop Navigation */}
               <div className="hidden lg:flex items-center gap-8">
-                <Link href="/" className="text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors">Inicio</Link>
-                <Link href="/search" className="text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors">Explorar</Link>
-                <Link href="/categories" className="text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors">Categorías</Link>
-                <Link href="/offers" className="text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors">Ofertas</Link>
-                <Link href="/business" className="text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">Vender en Bolsifyshop</Link>
+                {[
+                  { name: 'Inicio', href: '/' },
+                  { name: 'Explorar', href: '/search' },
+                  { name: 'Categorías', href: '/categories' },
+                  { name: 'Ofertas', href: '/offers' },
+                  { name: 'Vender', href: '/business' },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`relative text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 group py-2
+                      ${pathname === link.href ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-300'}
+                    `}
+                  >
+                    {link.name}
+                    <span className={`absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 dark:bg-blue-400 transform origin-left transition-transform duration-300 ease-out
+                      ${pathname === link.href ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}
+                    `} />
+                  </Link>
+                ))}
               </div>
             </div>
 
@@ -139,22 +156,7 @@ export default function Navbar() {
               <ThemeToggle />
 
               {user ? (
-                <div className="flex items-center gap-4">
-                  <Link href="/profile" className="text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors">
-                    Hola, {user.full_name || user.email}
-                  </Link>
-                  {user.role === 'seller' && (
-                    <Link href="/seller" className="text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
-                      Panel de Vendedor
-                    </Link>
-                  )}
-                  <button
-                    onClick={logout}
-                    className="text-sm font-medium text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400"
-                  >
-                    Salir
-                  </button>
-                </div>
+                <UserMenu />
               ) : (
                 <>
                   <button
@@ -221,29 +223,64 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-30 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}>
-          <div className="absolute top-16 left-0 w-full bg-white dark:bg-neutral-900 border-b border-zinc-200 dark:border-neutral-800 shadow-xl p-4 flex flex-col gap-4 animate-slide-down" onClick={e => e.stopPropagation()}>
-            <Link href="/" className="text-base font-medium text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white py-2 border-b border-zinc-100 dark:border-neutral-800" onClick={() => setIsMobileMenuOpen(false)}>Inicio</Link>
-            <Link href="/search" className="text-base font-medium text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white py-2 border-b border-zinc-100 dark:border-neutral-800" onClick={() => setIsMobileMenuOpen(false)}>Explorar</Link>
-            <Link href="/categories" className="text-base font-medium text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white py-2 border-b border-zinc-100 dark:border-neutral-800" onClick={() => setIsMobileMenuOpen(false)}>Categorías</Link>
-            <Link href="/offers" className="text-base font-medium text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white py-2 border-b border-zinc-100 dark:border-neutral-800" onClick={() => setIsMobileMenuOpen(false)}>Ofertas</Link>
+        <div className="lg:hidden fixed inset-0 z-50">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
 
-            {!user && (
-              <div className="flex flex-col gap-3 mt-2">
-                <button
-                  onClick={() => handleAuthModal('login')}
-                  className="w-full text-center px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 border border-zinc-300 dark:border-neutral-700 rounded-full hover:bg-zinc-50 dark:hover:bg-neutral-800"
+          {/* Menu Content */}
+          <div className="absolute top-0 right-0 w-[280px] h-full bg-white dark:bg-neutral-900 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="p-4 flex justify-between items-center border-b border-zinc-100 dark:border-neutral-800">
+              <span className="font-bold text-lg text-zinc-900 dark:text-white">Menú</span>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto py-4 px-4 flex flex-col gap-2">
+              {[
+                { name: 'Inicio', href: '/' },
+                { name: 'Explorar', href: '/search' },
+                { name: 'Categorías', href: '/categories' },
+                { name: 'Ofertas', href: '/offers' },
+                { name: 'Vender', href: '/business' },
+              ].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-base font-medium px-4 py-3 rounded-xl transition-colors
+                    ${pathname === link.href
+                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
+                      : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-neutral-800'}
+                  `}
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Iniciar Sesión
-                </button>
-                <button
-                  onClick={() => handleAuthModal('register')}
-                  className="w-full text-center px-4 py-2 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 rounded-full shadow-sm"
-                >
-                  Crear Cuenta
-                </button>
-              </div>
-            )}
+                  {link.name}
+                </Link>
+              ))}
+
+              {!user && (
+                <div className="mt-6 flex flex-col gap-3">
+                  <button
+                    onClick={() => handleAuthModal('login')}
+                    className="w-full py-3 text-sm font-medium text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-neutral-700 rounded-xl hover:bg-zinc-50 dark:hover:bg-neutral-800 transition-colors"
+                  >
+                    Iniciar Sesión
+                  </button>
+                  <button
+                    onClick={() => handleAuthModal('register')}
+                    className="w-full py-3 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 transition-colors rounded-xl shadow-sm"
+                  >
+                    Crear Cuenta
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

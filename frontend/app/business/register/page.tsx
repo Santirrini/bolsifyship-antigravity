@@ -7,6 +7,8 @@ import { ArrowLeft, Store, Mail, Lock, User, Loader2, CheckCircle, ArrowRight } 
 import { useAuth } from '@/context/AuthContext';
 import LoginModal from '@/components/LoginModal';
 
+import { sellerService } from '@/services/seller';
+
 export default function SellerRegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -35,33 +37,21 @@ export default function SellerRegisterPage() {
         }
 
         try {
-            // Unified Onboarding (Hot Swap Identity)
-            const onboardRes = await fetch('http://localhost:8000/seller/onboard', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    user: {
-                        email: formData.email,
-                        password: formData.password,
-                        full_name: formData.full_name
-                    },
-                    store: {
-                        name: formData.store_name,
-                        description: formData.store_description
-                    }
-                }),
+            const data = await sellerService.onboardSeller({
+                user: {
+                    email: formData.email,
+                    password: formData.password,
+                    full_name: formData.full_name
+                },
+                store: {
+                    name: formData.store_name,
+                    description: formData.store_description
+                }
             });
 
-            if (!onboardRes.ok) {
-                const data = await onboardRes.json();
-                throw new Error(data.detail || 'Error al crear la tienda y usuario');
-            }
-
-            const data = await onboardRes.json();
-            const token = data.access_token;
-
             // Login with new seller credentials (overwrites any existing session)
-            login(token);
+            // The login function in AuthContext handles the redirection based on role
+            await login(data.access_token);
 
         } catch (err: any) {
             setError(err.message);

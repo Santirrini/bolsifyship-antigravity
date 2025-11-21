@@ -36,8 +36,25 @@ export const adminService = {
         const response = await axios.put(`${API_URL}/orders/${orderId}`, { status }, getAuthHeader());
         return response.data;
     },
-    getUsers: async (skip = 0, limit = 100) => {
-        const response = await axios.get(`${API_URL}/users?skip=${skip}&limit=${limit}`, getAuthHeader());
+    getUsers: async (
+        skip = 0,
+        limit = 10,
+        search = "",
+        role: number | null = null,
+        status: number | null = null,
+        sortBy = "id",
+        sortOrder = "asc"
+    ) => {
+        const params = new URLSearchParams();
+        params.append("skip", skip.toString());
+        params.append("limit", limit.toString());
+        if (search) params.append("search", search);
+        if (role !== null) params.append("role", role.toString());
+        if (status !== null) params.append("is_active", status.toString());
+        params.append("sort_by", sortBy);
+        params.append("sort_order", sortOrder);
+
+        const response = await axios.get(`${API_URL}/users?${params.toString()}`, getAuthHeader());
         return response.data;
     },
     updateUser: async (userId: number, userData: any) => {

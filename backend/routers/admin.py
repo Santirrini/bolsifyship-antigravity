@@ -108,10 +108,55 @@ def update_order_status(order_id: int, order_update: OrderUpdate, db: Session = 
     db.refresh(db_order)
     return db_order
 
-@router.get("/users", response_model=List[UserSchema])
-def get_admin_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: User = Depends(get_current_admin)):
-    users = db.query(User).offset(skip).limit(limit).all()
-    return users
+@router.get("/users")
+def get_admin_users(
+    skip: int = 0,
+    limit: int = 10,
+    search: Optional[str] = None,
+    role: Optional[int] = None,
+    is_active: Optional[int] = None,
+    sort_by: Optional[str] = "id",
+    sort_order: Optional[str] = "asc",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin)
+):
+    query = db.query(User)
+
+    # Filtering
+    if search:
+        search_filter = f"%{search}%"
+        query = query.filter(
+            (User.full_name.ilike(search_filter)) | 
+            (User.email.ilike(search_filter))
+        )
+    
+    if role is not None:
+        query = query.filter(User.is_admin == role)
+        
+    if is_active is not None:
+        query = query.filter(User.is_active == is_active)
+
+    # Sorting
+    if sort_by:
+        # Validate sort_by field to prevent injection or errors
+        valid_sort_fields = ["id", "full_name", "email", "is_admin", "is_active"]
+        if sort_by in valid_sort_fields:
+            column = getattr(User, sort_by)
+            if sort_order == "desc":
+                query = query.order_by(column.desc())
+            else:
+                query = query.order_by(column.asc())
+        else:
+             # Default sort
+            query = query.order_by(User.id.asc())
+    else:
+        query = query.order_by(User.id.asc())
+
+    # Pagination
+    total = query.count()
+    users = query.offset(skip).limit(limit).all()
+    
+    return {"users": users, "total": total}
 
 @router.post("/users", response_model=UserSchema)
 def create_user_admin(user: UserCreateAdmin, db: Session = Depends(get_db), current_user: User = Depends(get_current_admin)):

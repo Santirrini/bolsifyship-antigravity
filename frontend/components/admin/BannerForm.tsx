@@ -20,7 +20,12 @@ export default function BannerForm({ initialData, isEditing = false }: BannerFor
         highlight_text: "",
         description: "",
         image_url: "",
+        image_mobile: "",
         link_url: "",
+        action_type: "url",
+        action_value: "",
+        start_date: "",
+        end_date: "",
         position: "hero",
         is_active: 1,
         order: 0,
@@ -34,7 +39,12 @@ export default function BannerForm({ initialData, isEditing = false }: BannerFor
                 highlight_text: initialData.highlight_text || "",
                 description: initialData.description || "",
                 image_url: initialData.image_url,
+                image_mobile: initialData.image_mobile || "",
                 link_url: initialData.link_url || "",
+                action_type: initialData.action_type || "url",
+                action_value: initialData.action_value || "",
+                start_date: initialData.start_date || "",
+                end_date: initialData.end_date || "",
                 position: initialData.position,
                 is_active: initialData.is_active,
                 order: initialData.order,
@@ -55,10 +65,17 @@ export default function BannerForm({ initialData, isEditing = false }: BannerFor
         setLoading(true);
 
         try {
+            const dataToSubmit = {
+                ...formData,
+                // Convert empty strings to null/undefined for optional fields if needed by backend,
+                // but our schema allows optional strings.
+                // Ensure dates are in ISO format if using date input
+            };
+
             if (isEditing && initialData) {
-                await bannerService.update(initialData.id, formData);
+                await bannerService.update(initialData.id, dataToSubmit);
             } else {
-                await bannerService.create(formData);
+                await bannerService.create(dataToSubmit);
             }
             router.push("/admin/banners");
             router.refresh();
@@ -129,7 +146,7 @@ export default function BannerForm({ initialData, isEditing = false }: BannerFor
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300">Image URL</label>
+                        <label className="text-sm font-medium text-gray-300">Desktop Image URL</label>
                         <input
                             type="url"
                             name="image_url"
@@ -142,14 +159,62 @@ export default function BannerForm({ initialData, isEditing = false }: BannerFor
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300">Link URL</label>
+                        <label className="text-sm font-medium text-gray-300">Mobile Image URL</label>
                         <input
-                            type="text"
-                            name="link_url"
-                            value={formData.link_url}
+                            type="url"
+                            name="image_mobile"
+                            value={formData.image_mobile}
                             onChange={handleChange}
                             className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl border border-gray-700 focus:border-purple-500 focus:outline-none"
-                            placeholder="/products/123"
+                            placeholder="https://... (Optional)"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-300">Action Type</label>
+                        <select
+                            name="action_type"
+                            value={formData.action_type}
+                            onChange={handleChange}
+                            className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl border border-gray-700 focus:border-purple-500 focus:outline-none"
+                        >
+                            <option value="url">External URL</option>
+                            <option value="category">Category</option>
+                            <option value="product">Product</option>
+                        </select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-300">Action Value</label>
+                        <input
+                            type="text"
+                            name="action_value"
+                            value={formData.action_value}
+                            onChange={handleChange}
+                            className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl border border-gray-700 focus:border-purple-500 focus:outline-none"
+                            placeholder={formData.action_type === 'url' ? 'https://...' : 'ID or Slug'}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-300">Start Date</label>
+                        <input
+                            type="datetime-local"
+                            name="start_date"
+                            value={formData.start_date}
+                            onChange={handleChange}
+                            className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl border border-gray-700 focus:border-purple-500 focus:outline-none"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-300">End Date</label>
+                        <input
+                            type="datetime-local"
+                            name="end_date"
+                            value={formData.end_date}
+                            onChange={handleChange}
+                            className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl border border-gray-700 focus:border-purple-500 focus:outline-none"
                         />
                     </div>
 

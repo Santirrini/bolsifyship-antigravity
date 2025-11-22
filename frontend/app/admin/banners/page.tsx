@@ -78,6 +78,8 @@ export default function AdminBanners() {
                                 <th className="px-6 py-4">Image</th>
                                 <th className="px-6 py-4">Title</th>
                                 <th className="px-6 py-4">Position</th>
+                                <th className="px-6 py-4">Stats</th>
+                                <th className="px-6 py-4">Schedule</th>
                                 <th className="px-6 py-4">Status</th>
                                 <th className="px-6 py-4">Order</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
@@ -86,13 +88,13 @@ export default function AdminBanners() {
                         <tbody className="divide-y divide-gray-800">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-8 text-center">
+                                    <td colSpan={8} className="px-6 py-8 text-center">
                                         Loading banners...
                                     </td>
                                 </tr>
                             ) : filteredBanners.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-8 text-center">
+                                    <td colSpan={8} className="px-6 py-8 text-center">
                                         No banners found.
                                     </td>
                                 </tr>
@@ -124,9 +126,30 @@ export default function AdminBanners() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
+                                            <div className="text-xs">
+                                                <div className="text-gray-300">Views: {banner.views || 0}</div>
+                                                <div className="text-gray-500">Clicks: {banner.clicks || 0}</div>
+                                                <div className="text-purple-400">CTR: {banner.views > 0 ? ((banner.clicks / banner.views) * 100).toFixed(1) : 0}%</div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-xs">
+                                                {banner.start_date ? (
+                                                    <div className="text-green-400">Start: {new Date(banner.start_date).toLocaleDateString()}</div>
+                                                ) : (
+                                                    <div className="text-gray-600">No start date</div>
+                                                )}
+                                                {banner.end_date ? (
+                                                    <div className="text-red-400">End: {new Date(banner.end_date).toLocaleDateString()}</div>
+                                                ) : (
+                                                    <div className="text-gray-600">No end date</div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
                                             <span className={`px-2 py-1 rounded-lg text-xs ${banner.is_active
-                                                    ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                                                    : "bg-red-500/10 text-red-400 border border-red-500/20"
+                                                ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                                                : "bg-red-500/10 text-red-400 border border-red-500/20"
                                                 }`}>
                                                 {banner.is_active ? "Active" : "Inactive"}
                                             </span>

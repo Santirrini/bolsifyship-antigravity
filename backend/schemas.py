@@ -183,10 +183,17 @@ class BannerBase(BaseModel):
     highlight_text: Optional[str] = None
     description: Optional[str] = None
     image_url: str
+    image_mobile: Optional[str] = None
     link_url: Optional[str] = None
+    action_type: str = "url"
+    action_value: Optional[str] = None
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
     position: str = "hero"
     is_active: int = 1
     order: int = 0
+    views: int = 0
+    clicks: int = 0
 
 class BannerCreate(BannerBase):
     pass

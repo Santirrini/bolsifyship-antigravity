@@ -24,7 +24,13 @@ def read_banners(
         query = query.filter(models.Banner.position == position)
     
     if active_only:
+        from datetime import datetime
+        now = datetime.now().isoformat()
         query = query.filter(models.Banner.is_active == 1)
+        # Filter by start_date (if set, must be <= now)
+        query = query.filter((models.Banner.start_date == None) | (models.Banner.start_date <= now))
+        # Filter by end_date (if set, must be >= now)
+        query = query.filter((models.Banner.end_date == None) | (models.Banner.end_date >= now))
         
     banners = query.order_by(models.Banner.order.asc()).offset(skip).limit(limit).all()
     return banners
@@ -66,3 +72,19 @@ def delete_banner(banner_id: int, db: Session = Depends(get_db)):
     db.delete(db_banner)
     db.commit()
     return None
+
+@router.post("/{banner_id}/view", status_code=status.HTTP_200_OK)
+def track_banner_view(banner_id: int, db: Session = Depends(get_db)):
+    db_banner = db.query(models.Banner).filter(models.Banner.id == banner_id).first()
+    if db_banner:
+        db_banner.views += 1
+        db.commit()
+    return {"message": "View tracked"}
+
+@router.post("/{banner_id}/click", status_code=status.HTTP_200_OK)
+def track_banner_click(banner_id: int, db: Session = Depends(get_db)):
+    db_banner = db.query(models.Banner).filter(models.Banner.id == banner_id).first()
+    if db_banner:
+        db_banner.clicks += 1
+        db.commit()
+    return {"message": "Click tracked"}

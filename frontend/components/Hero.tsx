@@ -71,6 +71,18 @@ export default function Hero() {
         return <div className="w-full h-[500px] md:h-[600px] bg-gray-900 animate-pulse"></div>;
     }
 
+    const handleSlideClick = async (slide: any) => {
+        if (slide.id) {
+            await bannerService.trackClick(slide.id);
+        }
+    };
+
+    const getLinkUrl = (slide: any) => {
+        if (slide.action_type === 'category') return `/search?category=${slide.action_value}`;
+        if (slide.action_type === 'product') return `/products/${slide.action_value}`;
+        return slide.link_url || slide.action_value || "/search";
+    };
+
     return (
         <div className="relative w-full h-[500px] md:h-[600px] bg-gray-900 text-white overflow-hidden group">
             {/* Slides */}
@@ -81,13 +93,16 @@ export default function Hero() {
                         }`}
                 >
                     {/* Background Image */}
-                    <div
-                        className="absolute inset-0 bg-cover bg-center transform transition-transform duration-[10000ms] ease-linear"
-                        style={{
-                            backgroundImage: `url('${slide.image_url}')`,
-                            transform: index === current ? 'scale(1.1)' : 'scale(1.0)'
-                        }}
-                    ></div>
+                    <picture className="absolute inset-0">
+                        {slide.image_mobile && (
+                            <source media="(max-width: 768px)" srcSet={slide.image_mobile} />
+                        )}
+                        <img
+                            src={slide.image_url}
+                            alt={slide.title}
+                            className={`w-full h-full object-cover transform transition-transform duration-[10000ms] ease-linear ${index === current ? 'scale-110' : 'scale-100'}`}
+                        />
+                    </picture>
 
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-90"></div>
@@ -114,7 +129,11 @@ export default function Hero() {
                                 </p>
                             )}
                             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
-                                <Link href={slide.link_url || "/search"} className="group bg-white text-zinc-900 hover:bg-zinc-100 font-bold py-3 px-8 rounded-full transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg">
+                                <Link
+                                    href={getLinkUrl(slide)}
+                                    onClick={() => handleSlideClick(slide)}
+                                    className="group bg-white text-zinc-900 hover:bg-zinc-100 font-bold py-3 px-8 rounded-full transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg"
+                                >
                                     Comprar Ahora
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>

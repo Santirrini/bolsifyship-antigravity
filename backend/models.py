@@ -113,7 +113,14 @@ class Banner(Base):
     highlight_text = Column(String, nullable=True)
     description = Column(String, nullable=True)
     image_url = Column(String)
+    image_mobile = Column(String, nullable=True) # New: Mobile specific image
     link_url = Column(String, nullable=True)
+    action_type = Column(String, default="url") # "url", "category", "product"
+    action_value = Column(String, nullable=True) # The URL, category ID, or product ID
+    start_date = Column(String, nullable=True) # ISO format
+    end_date = Column(String, nullable=True) # ISO format
+    views = Column(Integer, default=0)
+    clicks = Column(Integer, default=0)
     position = Column(String, default="hero") # "hero", "home_middle", etc.
     is_active = Column(Integer, default=1)
     order = Column(Integer, default=0)

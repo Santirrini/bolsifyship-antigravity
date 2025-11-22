@@ -1,55 +1,101 @@
-import { Store, Star, MapPin } from 'lucide-react';
-import Link from 'next/link';
+'use client';
 
-export default function StoresPage() {
+import React, { useState, useEffect } from 'react';
+import { Search, Filter } from 'lucide-react';
+import StoreGrid from '@/components/store/StoreGrid';
+import { storeService, Store } from '@/services/store';
+import Navbar from '@/components/Navbar';
+import BottomNav from '@/components/BottomNav';
+
+const CATEGORIES = ["Todos", "Tecnología", "Moda", "Hogar", "Belleza", "Juguetes"];
+
+export default function StoreExplorerPage() {
+    const [stores, setStores] = useState<Store[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('Todos');
+
+    useEffect(() => {
+        const fetchStores = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const params: any = {};
+                if (searchQuery) params.search = searchQuery;
+                if (selectedCategory !== 'Todos') params.category = selectedCategory;
+
+                const data = await storeService.getAllStores(params);
+                setStores(data);
+            } catch (err) {
+                setError('No se pudieron cargar las tiendas. Por favor intenta de nuevo.');
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const timeoutId = setTimeout(() => {
+            fetchStores();
+        }, 300); // Debounce search
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery, selectedCategory]);
+
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-neutral-950 pt-24 pb-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-4">
-                        Directorio de Tiendas
-                    </h1>
-                    <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-                        Explora nuestros proveedores verificados y descubre productos únicos de vendedores confiables.
-                    </p>
-                </div>
+        <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
+            <Navbar />
 
-                {/* Placeholder Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[1, 2, 3, 4, 5, 6].map((item) => (
-                        <div key={item} className="bg-white dark:bg-neutral-900 rounded-2xl p-6 border border-zinc-100 dark:border-neutral-800 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-16 h-16 rounded-full bg-zinc-100 dark:bg-neutral-800 flex items-center justify-center">
-                                    <Store className="w-8 h-8 text-zinc-400" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Tienda Ejemplo {item}</h3>
-                                    <div className="flex items-center gap-1 text-amber-400 text-sm">
-                                        <Star className="w-4 h-4 fill-current" />
-                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">4.8</span>
-                                        <span className="text-zinc-400">(120 reviews)</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-4 line-clamp-2">
-                                Vendedor especializado en productos de alta calidad con envíos rápidos y seguros.
-                            </p>
-                            <div className="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-neutral-800">
-                                <div className="flex items-center gap-1 text-xs text-zinc-500">
-                                    <MapPin className="w-3 h-3" />
-                                    <span>Ciudad de México</span>
-                                </div>
-                                <Link
-                                    href={`/store/${item}`}
-                                    className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                                >
-                                    Visitar Tienda
-                                </Link>
-                            </div>
+            {/* Header Section */}
+            <div className="bg-white border-b border-gray-200 pt-24 pb-8 md:pt-32 md:pb-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-8">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+                            Nuestros Proveedores Verificados
+                        </h1>
+                        <p className="text-gray-500 text-lg">
+                            Explora el "Hall de la Fama" de proveedores asiáticos verificados. Calidad, confianza y transparencia.
+                        </p>
+                    </div>
+
+                    {/* Search Bar */}
+                    <div className="max-w-2xl mx-auto relative mb-8">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-gray-400" />
                         </div>
-                    ))}
+                        <input
+                            type="text"
+                            className="block w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm"
+                            placeholder="Buscar tienda por nombre..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Category Pills */}
+                    <div className="flex flex-wrap justify-center gap-2">
+                        {CATEGORIES.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setSelectedCategory(category)}
+                                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === category
+                                        ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
+                                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                                    }`}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
+
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <StoreGrid stores={stores} isLoading={isLoading} error={error} />
+            </main>
+
+            <BottomNav />
         </div>
     );
 }

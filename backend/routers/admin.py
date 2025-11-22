@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import get_db
 from models import User, Product, Order, OrderItem
-from schemas import ProductCreate
+from schemas import ProductCreate, ProductUpdate
 from schemas import Product as ProductSchema, AdminStats, Order as OrderSchema, User as UserSchema
 from routers.auth import get_current_user
 from pydantic import BaseModel
@@ -70,7 +70,7 @@ def create_product(product: ProductCreate, db: Session = Depends(get_db), curren
     return db_product
 
 @router.put("/products/{product_id}", response_model=ProductSchema)
-def update_product(product_id: int, product: ProductCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_admin)):
+def update_product(product_id: int, product: ProductUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_admin)):
     db_product = db.query(Product).filter(Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")

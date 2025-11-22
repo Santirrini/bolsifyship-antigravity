@@ -11,6 +11,9 @@ interface Product {
     category: string;
     image: string;
     sales_count: number;
+    stock: number;
+    is_active: number;
+    sku: string;
 }
 
 import { adminService } from "@/services/admin";
@@ -44,6 +47,23 @@ export default function AdminProducts() {
         } catch (error) {
             console.error("Error deleting product:", error);
             alert("Failed to delete product");
+        }
+    };
+
+    const handleToggleStatus = async (id: number, currentStatus: number) => {
+        try {
+            const newStatus = currentStatus === 1 ? 0 : 1;
+            // We need to send only the fields we want to update, but the API might expect a full object or specific fields.
+            // Based on adminService.updateProduct, it takes productData.
+            // Let's assume the backend handles partial updates (PATCH behavior) or we might need to send more data.
+            // Looking at schemas.py, ProductCreate/Update schemas are not explicitly defined for partial updates in the snippet,
+            // but usually FastAPI with Pydantic handles this if we use the right schema.
+            // Let's try sending just the field.
+            await adminService.updateProduct(id, { is_active: newStatus });
+            setProducts(products.map(p => p.id === id ? { ...p, is_active: newStatus } : p));
+        } catch (error) {
+            console.error("Error updating status:", error);
+            alert("Failed to update status");
         }
     };
 
@@ -88,6 +108,8 @@ export default function AdminProducts() {
                                 <th className="px-6 py-4">Product</th>
                                 <th className="px-6 py-4">Category</th>
                                 <th className="px-6 py-4">Price</th>
+                                <th className="px-6 py-4">Stock</th>
+                                <th className="px-6 py-4">Status</th>
                                 <th className="px-6 py-4">Sales</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
@@ -123,7 +145,10 @@ export default function AdminProducts() {
                                                         </div>
                                                     )}
                                                 </div>
-                                                <span className="font-medium text-white">{product.name}</span>
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium text-white">{product.name}</span>
+                                                    <span className="text-xs text-gray-500">{product.sku || 'NO-SKU'}</span>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -132,6 +157,27 @@ export default function AdminProducts() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-white">${product.price.toFixed(2)}</td>
+                                        <td className="px-6 py-4">
+                                            {product.stock === 0 ? (
+                                                <span className="bg-red-500/20 text-red-400 px-2 py-1 rounded-lg text-xs">Out of Stock</span>
+                                            ) : product.stock < 5 ? (
+                                                <span className="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-lg text-xs">Low Stock ({product.stock})</span>
+                                            ) : (
+                                                <span className="text-green-400 text-sm">{product.stock} in stock</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <button
+                                                onClick={() => handleToggleStatus(product.id, product.is_active)}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${product.is_active === 1 ? 'bg-purple-600' : 'bg-gray-700'
+                                                    }`}
+                                            >
+                                                <span
+                                                    className={`${product.is_active === 1 ? 'translate-x-6' : 'translate-x-1'
+                                                        } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                                />
+                                            </button>
+                                        </td>
                                         <td className="px-6 py-4">{product.sales_count}</td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2">

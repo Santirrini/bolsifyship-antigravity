@@ -15,9 +15,29 @@ class ProductBase(BaseModel):
     season: Optional[str] = None
     sales_count: int = 0
     store_id: Optional[int] = None
+    stock: int = 0
+    is_active: int = 1
+    sku: Optional[str] = None
 
 class ProductCreate(ProductBase):
     pass
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    discount_price: Optional[float] = None
+    category: Optional[str] = None
+    rating: Optional[float] = None
+    reviews: Optional[int] = None
+    source: Optional[str] = None
+    image: Optional[str] = None
+    season: Optional[str] = None
+    sales_count: Optional[int] = None
+    store_id: Optional[int] = None
+    stock: Optional[int] = None
+    is_active: Optional[int] = None
+    sku: Optional[str] = None
 
 class Product(ProductBase):
     id: int

@@ -17,6 +17,9 @@ class Product(Base):
     season = Column(String, nullable=True, index=True) # "christmas", "halloween", "summer", etc.
     sales_count = Column(Integer, default=0, index=True) # To track popularity/clearance status
     store_id = Column(Integer, index=True, nullable=True) # Null for internal products
+    stock = Column(Integer, default=0) # New: Inventory count
+    is_active = Column(Integer, default=1) # New: 1 for active, 0 for draft/hidden
+    sku = Column(String, nullable=True, index=True) # New: Stock Keeping Unit
 
 class User(Base):
     __tablename__ = "users"

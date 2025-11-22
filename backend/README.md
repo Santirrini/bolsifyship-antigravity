@@ -397,7 +397,7 @@ Verifica que estés ejecutando el servidor desde el directorio `backend`:
 
 ```bash
 cd backend
-uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 
 ### Base de datos bloqueada

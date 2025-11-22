@@ -9,6 +9,25 @@ router = APIRouter(
     tags=["stores"],
 )
 
+@router.get("/", response_model=List[schemas.Store])
+def get_stores(
+    skip: int = 0,
+    limit: int = 100,
+    category: str = None,
+    search: str = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Store)
+    
+    if category:
+        query = query.filter(models.Store.category == category)
+    
+    if search:
+        query = query.filter(models.Store.name.contains(search))
+        
+    stores = query.offset(skip).limit(limit).all()
+    return stores
+
 @router.get("/{store_id}", response_model=schemas.Store)
 def get_store(store_id: int, db: Session = Depends(get_db)):
     store = db.query(models.Store).filter(models.Store.id == store_id).first()

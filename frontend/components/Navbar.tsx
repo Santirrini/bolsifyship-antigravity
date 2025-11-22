@@ -1,6 +1,6 @@
 'use client';
 
-import { ShoppingBag, Search, Menu, Heart, X } from 'lucide-react';
+import { ShoppingBag, Search, Menu, Heart, X, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -89,7 +89,76 @@ export default function Navbar() {
               <div className="hidden lg:flex items-center gap-8">
                 {[
                   { name: 'Inicio', href: '/' },
-                  { name: 'Explorar', href: '/search' },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`relative text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 group py-2
+                      ${pathname === link.href ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-300'}
+                    `}
+                  >
+                    {link.name}
+                    <span className={`absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 dark:bg-blue-400 transform origin-left transition-transform duration-300 ease-out
+                      ${pathname === link.href ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}
+                    `} />
+                  </Link>
+                ))}
+
+                {/* Explore Dropdown */}
+                <div className="relative group">
+                  <button className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 py-2
+                    ${pathname.startsWith('/search') || pathname.startsWith('/stores') ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-300'}
+                  `}>
+                    Explorar
+                    <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute top-full left-0 pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                    <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-xl border border-zinc-100 dark:border-neutral-800 overflow-hidden p-1">
+                      <Link
+                        href="/search"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-neutral-800 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                          <Search className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Explorar Productos</span>
+                          <span className="text-xs text-zinc-400">Búsqueda general</span>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/stores"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-neutral-800 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                          <ShoppingBag className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Explorar Tiendas</span>
+                          <span className="text-xs text-zinc-400">Directorio de proveedores</span>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/search?sort=newest"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-neutral-800 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
+                          <Menu className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Nuevos Arrivos</span>
+                          <span className="text-xs text-zinc-400">Lo más reciente</span>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {[
                   { name: 'Categorías', href: '/categories' },
                   { name: 'Ofertas', href: '/offers' },
                   { name: 'Vender', href: '/business' },

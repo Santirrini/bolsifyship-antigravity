@@ -37,6 +37,10 @@ class Store(Base):
     description = Column(String, nullable=True)
     owner_id = Column(Integer, index=True) # User ID of the seller
     logo_url = Column(String, nullable=True)
+    banner_url = Column(String, nullable=True) # New: Store banner
+    category = Column(String, index=True, nullable=True) # New: Main category (e.g., "Technology", "Fashion")
+    rating = Column(Float, default=0.0, index=True) # New: Average rating
+    response_rate = Column(Integer, default=100) # New: Response rate percentage
     created_at = Column(String) # ISO format
 
 class CartItem(Base):

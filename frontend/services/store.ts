@@ -7,6 +7,10 @@ export interface Store {
     name: string;
     description?: string;
     logo_url?: string;
+    banner_url?: string;
+    category?: string;
+    rating?: number;
+    response_rate?: number;
     owner_id: number;
     created_at?: string;
 }
@@ -17,6 +21,10 @@ export const MOCK_STORE: Store = {
     name: "Fashion Hub",
     description: "Your one-stop shop for the latest trends in fashion. We offer high-quality clothing at affordable prices.",
     logo_url: "https://ui-avatars.com/api/?name=Fashion+Hub&background=0D8ABC&color=fff",
+    banner_url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
+    category: "Moda",
+    rating: 4.8,
+    response_rate: 98,
     owner_id: 1,
     created_at: "2024-01-01T00:00:00Z"
 };
@@ -69,6 +77,16 @@ export const MOCK_PRODUCTS = [
 ];
 
 export const storeService = {
+    getAllStores: async (params: { skip?: number; limit?: number; category?: string; search?: string } = {}) => {
+        try {
+            const response = await axios.get(`${API_URL}/stores/`, { params });
+            return response.data;
+        } catch (error) {
+            console.warn("Failed to fetch stores, returning mock data", error);
+            return [MOCK_STORE];
+        }
+    },
+
     getStore: async (id: number) => {
         try {
             const response = await axios.get(`${API_URL}/stores/${id}`);

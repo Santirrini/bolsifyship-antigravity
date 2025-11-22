@@ -52,6 +52,8 @@ class StoreBase(BaseModel):
     name: str
     description: Optional[str] = None
     logo_url: Optional[str] = None
+    banner_url: Optional[str] = None
+    category: Optional[str] = None
 
 class StoreCreate(StoreBase):
     pass
@@ -59,6 +61,8 @@ class StoreCreate(StoreBase):
 class Store(StoreBase):
     id: int
     owner_id: int
+    rating: float = 0.0
+    response_rate: int = 100
     created_at: Optional[str] = None
 
     class Config:

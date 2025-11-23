@@ -30,10 +30,10 @@ export default function Categories() {
                             Explora nuestras colecciones más visitadas
                         </p>
                     </div>
-                    <a href="#" className="group flex items-center text-zinc-900 dark:text-zinc-100 font-semibold hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">
+                    <Link href="/categories" className="group flex items-center text-zinc-900 dark:text-zinc-100 font-semibold hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">
                         Ver todas
                         <span className="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </a>
+                    </Link>
                 </div>
 
                 <div

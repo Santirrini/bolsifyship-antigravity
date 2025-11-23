@@ -51,7 +51,7 @@ export default function SellerRegisterPage() {
 
             // Login with new seller credentials (overwrites any existing session)
             // The login function in AuthContext handles the redirection based on role
-            await login(data.access_token);
+            await login();
 
         } catch (err: any) {
             setError(err.message);

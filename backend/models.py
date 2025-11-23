@@ -127,3 +127,12 @@ class Banner(Base):
     position = Column(String, default="hero") # "hero", "home_middle", etc.
     is_active = Column(Integer, default=1)
     order = Column(Integer, default=0)
+
+class StoreFollow(Base):
+    __tablename__ = "store_follows"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
+    store_id = Column(Integer, index=True)
+    created_at = Column(String) # ISO format
+

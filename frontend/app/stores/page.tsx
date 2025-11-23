@@ -43,29 +43,29 @@ export default function StoreExplorerPage() {
     }, [searchQuery, selectedCategory]);
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
+        <div className="min-h-screen bg-background pb-20 md:pb-0">
             <Navbar />
 
             {/* Header Section */}
-            <div className="bg-white border-b border-gray-200 pt-24 pb-8 md:pt-32 md:pb-12">
+            <div className="bg-gradient-to-b from-background to-muted/30 border-b border-border/50 pt-24 pb-12 md:pt-32 md:pb-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-2xl mx-auto mb-8">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+                    <div className="text-center max-w-2xl mx-auto mb-10">
+                        <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
                             Nuestros Proveedores Verificados
                         </h1>
-                        <p className="text-gray-500 text-lg">
+                        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
                             Explora el "Hall de la Fama" de proveedores asiáticos verificados. Calidad, confianza y transparencia.
                         </p>
                     </div>
 
                     {/* Search Bar */}
-                    <div className="max-w-2xl mx-auto relative mb-8">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Search className="h-5 w-5 text-gray-400" />
+                    <div className="max-w-2xl mx-auto relative mb-10">
+                        <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-muted-foreground" />
                         </div>
                         <input
                             type="text"
-                            className="block w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm"
+                            className="block w-full pl-12 pr-4 py-4 bg-background border border-input rounded-2xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm hover:shadow-md"
                             placeholder="Buscar tienda por nombre..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -78,9 +78,9 @@ export default function StoreExplorerPage() {
                             <button
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
-                                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === category
-                                        ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
-                                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                                className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === category
+                                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25 scale-105'
+                                    : 'bg-card text-muted-foreground border border-border hover:bg-accent hover:text-accent-foreground hover:border-accent-foreground/10'
                                     }`}
                             >
                                 {category}
@@ -95,7 +95,9 @@ export default function StoreExplorerPage() {
                 <StoreGrid stores={stores} isLoading={isLoading} error={error} />
             </main>
 
-            <BottomNav />
+            <div className="md:hidden">
+                <BottomNav />
+            </div>
         </div>
     );
 }

@@ -88,6 +88,15 @@ class Store(StoreBase):
     class Config:
         from_attributes = True
 
+class StoreFollow(BaseModel):
+    id: int
+    user_id: int
+    store_id: int
+    created_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
 class ProductDetail(Product):
     store: Optional[Store] = None
 

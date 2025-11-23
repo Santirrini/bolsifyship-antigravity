@@ -15,7 +15,7 @@ const StoreGrid: React.FC<StoreGridProps> = ({ stores, isLoading, error }) => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
         );
     }
@@ -23,8 +23,8 @@ const StoreGrid: React.FC<StoreGridProps> = ({ stores, isLoading, error }) => {
     if (error) {
         return (
             <div className="text-center py-12">
-                <p className="text-red-500 mb-2">Error al cargar tiendas</p>
-                <p className="text-gray-500 text-sm">{error}</p>
+                <p className="text-destructive mb-2">Error al cargar tiendas</p>
+                <p className="text-muted-foreground text-sm">{error}</p>
             </div>
         );
     }
@@ -32,13 +32,13 @@ const StoreGrid: React.FC<StoreGridProps> = ({ stores, isLoading, error }) => {
     if (stores.length === 0) {
         return (
             <div className="text-center py-12">
-                <p className="text-gray-500">No se encontraron tiendas que coincidan con tu búsqueda.</p>
+                <p className="text-muted-foreground">No se encontraron tiendas que coincidan con tu búsqueda.</p>
             </div>
         );
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {stores.map((store) => (
                 <StoreCard key={store.id} store={store} />
             ))}

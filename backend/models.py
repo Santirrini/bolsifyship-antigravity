@@ -20,6 +20,7 @@ class Product(Base):
     stock = Column(Integer, default=0) # New: Inventory count
     is_active = Column(Integer, default=1) # New: 1 for active, 0 for draft/hidden
     sku = Column(String, nullable=True, index=True) # New: Stock Keeping Unit
+    images = Column(String, nullable=True) # New: JSON string of image URLs for gallery
 
 class User(Base):
     __tablename__ = "users"

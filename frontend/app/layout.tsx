@@ -25,6 +25,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from 'sonner';
 import CartDrawer from '@/components/CartDrawer';
 import WishlistDrawer from '@/components/WishlistDrawer';
+import BottomNav from '@/components/BottomNav';
 
 export default function RootLayout({
   children,
@@ -49,6 +50,7 @@ export default function RootLayout({
                   {children}
                   <CartDrawer />
                   <WishlistDrawer />
+                  <BottomNav />
                   <Toaster position="bottom-right" richColors />
                 </UIProvider>
               </ThemeProvider>

@@ -18,6 +18,7 @@ class ProductBase(BaseModel):
     stock: int = 0
     is_active: int = 1
     sku: Optional[str] = None
+    images: Optional[List[str]] = None
 
 class ProductCreate(ProductBase):
     pass

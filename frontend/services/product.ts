@@ -13,5 +13,10 @@ export const productService = {
         const promises = ids.map(id => axios.get(`${API_URL}/products/${id}`));
         const responses = await Promise.all(promises);
         return responses.map(r => r.data);
+    },
+
+    getRelatedProducts: async (id: number) => {
+        const response = await axios.get(`${API_URL}/products/${id}/related`);
+        return response.data;
     }
 };

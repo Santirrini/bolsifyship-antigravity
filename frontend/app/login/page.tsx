@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import api from '@/services/api';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 
@@ -22,17 +23,8 @@ export default function LoginPage() {
             formData.append('username', email);
             formData.append('password', password);
 
-            const res = await fetch('http://localhost:8000/auth/token', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!res.ok) {
-                throw new Error('Login failed');
-            }
-
-            const data = await res.json();
-            await login(data.access_token);
+            await api.post('/auth/token', formData);
+            await login();
         } catch (err) {
             setError('Invalid email or password');
         } finally {

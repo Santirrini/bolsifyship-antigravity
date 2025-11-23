@@ -1,4 +1,8 @@
 from fastapi import FastAPI, HTTPException, Depends
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
@@ -37,7 +41,7 @@ def startup_db_client():
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # TODO: In production, replace with specific frontend domain e.g. ["https://bolsifyshop.com"]
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

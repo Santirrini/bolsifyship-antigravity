@@ -1,84 +1,52 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000';
-
-const getAuthHeader = () => {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-    return { headers: { Authorization: `Bearer ${token}` } };
-};
+import api from './api';
 
 export const userService = {
     getProfile: async () => {
-        const config = getAuthHeader();
-        if (!config) return null;
-        const response = await axios.get(`${API_URL}/auth/users/me`, config);
+        const response = await api.get('/auth/users/me');
         return response.data;
     },
     updateProfile: async (userData: any) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.put(`${API_URL}/users/me`, userData, config);
+        const response = await api.put('/users/me', userData);
         return response.data;
     },
     getAddresses: async () => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.get(`${API_URL}/users/me/addresses`, config);
+        const response = await api.get('/users/me/addresses');
         return response.data;
     },
     createAddress: async (addressData: any) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.post(`${API_URL}/users/me/addresses`, addressData, config);
+        const response = await api.post('/users/me/addresses', addressData);
         return response.data;
     },
     updateAddress: async (addressId: number, addressData: any) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.put(`${API_URL}/users/me/addresses/${addressId}`, addressData, config);
+        const response = await api.put(`/users/me/addresses/${addressId}`, addressData);
         return response.data;
     },
     deleteAddress: async (addressId: number) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.delete(`${API_URL}/users/me/addresses/${addressId}`, config);
+        const response = await api.delete(`/users/me/addresses/${addressId}`);
         return response.data;
     },
     getPaymentMethods: async () => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.get(`${API_URL}/users/me/payment-methods`, config);
+        const response = await api.get('/users/me/payment-methods');
         return response.data;
     },
     createPaymentMethod: async (paymentData: any) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.post(`${API_URL}/users/me/payment-methods`, paymentData, config);
+        const response = await api.post('/users/me/payment-methods', paymentData);
         return response.data;
     },
     deletePaymentMethod: async (paymentId: number) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.delete(`${API_URL}/users/me/payment-methods/${paymentId}`, config);
+        const response = await api.delete(`/users/me/payment-methods/${paymentId}`);
         return response.data;
     },
     getOrders: async () => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.get(`${API_URL}/orders/me`, config);
+        const response = await api.get('/orders/me');
         return response.data;
     },
     getWishlist: async (userId: number) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.get(`${API_URL}/wishlist/${userId}`, config);
+        const response = await api.get(`/wishlist/${userId}`);
         return response.data;
     },
     toggleWishlist: async (userId: number, productId: number) => {
-        const config = getAuthHeader();
-        if (!config) throw new Error("No token found");
-        const response = await axios.post(`${API_URL}/wishlist/toggle`, { user_id: userId, product_id: productId }, config);
+        const response = await api.post('/wishlist/toggle', { user_id: userId, product_id: productId });
         return response.data;
     }
 };

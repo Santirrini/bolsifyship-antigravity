@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import api from '../services/api';
 
 interface User {
     id: number;
@@ -14,7 +15,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (token: string) => Promise<void>;
+    login: () => Promise<void>;
     logout: () => void;
     loading: boolean;
 }
@@ -28,60 +29,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const checkUser = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    const res = await fetch('http://localhost:8000/auth/users/me', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    if (res.ok) {
-                        const userData = await res.json();
-                        setUser(userData);
-                    } else {
-                        localStorage.removeItem('token');
-                    }
-                } catch (error) {
-                    console.error("Auth check failed", error);
-                    localStorage.removeItem('token');
-                }
+            try {
+                const res = await api.get('/auth/users/me');
+                setUser(res.data);
+            } catch (error) {
+                // Not logged in or session expired
+                setUser(null);
             }
             setLoading(false);
         };
         checkUser();
     }, []);
 
-    const login = async (token: string) => {
-        localStorage.setItem('token', token);
+    const login = async () => {
         // Refresh user data immediately
         try {
-            const res = await fetch('http://localhost:8000/auth/users/me', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const res = await api.get('/auth/users/me');
+            const userData = res.data;
+            setUser(userData);
 
-            if (res.ok) {
-                const userData = await res.json();
-                setUser(userData);
-                if (userData.role === 'admin') {
-                    router.push('/admin');
-                } else if (userData.role === 'seller') {
-                    router.push('/seller');
-                } else {
-                    router.push('/');
-                }
+            if (userData.role === 'admin') {
+                router.push('/admin');
+            } else if (userData.role === 'seller') {
+                router.push('/seller');
             } else {
-                console.error("Failed to fetch user data after login");
+                router.push('/');
             }
         } catch (err) {
             console.error("Login fetch user failed", err);
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout');
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
         setUser(null);
         router.push('/');
     };

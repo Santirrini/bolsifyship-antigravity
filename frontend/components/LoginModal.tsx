@@ -48,6 +48,7 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
                 const res = await fetch('http://localhost:8000/auth/token', {
                     method: 'POST',
                     body: formDataLogin,
+                    credentials: 'include', // Important: this allows cookies to be set
                 });
 
                 if (!res.ok) {
@@ -55,8 +56,8 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
                     throw new Error(data.detail || 'Error al iniciar sesión');
                 }
 
-                const data = await res.json();
-                await login(data.access_token);
+                // Cookie is now set, call login() to fetch user data
+                await login();
                 onClose();
             } else {
                 if (formData.password !== formData.confirmPassword) {
@@ -86,11 +87,12 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
                 const loginRes = await fetch('http://localhost:8000/auth/token', {
                     method: 'POST',
                     body: formDataLogin,
+                    credentials: 'include', // Important: this allows cookies to be set
                 });
 
                 if (loginRes.ok) {
-                    const loginData = await loginRes.json();
-                    await login(loginData.access_token);
+                    // Cookie is now set, call login() to fetch user data
+                    await login();
                     onClose();
                 } else {
                     setView('login');

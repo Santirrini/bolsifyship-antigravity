@@ -9,14 +9,13 @@ export const api = axios.create({
 
 // Request interceptor removed as we use HttpOnly cookies now
 
+// Response interceptor - no longer redirects on 401 to allow public browsing
+// Protected routes handle authentication via ProtectedRoute component
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-                window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
-            }
-        }
+        // Just pass through the error without redirecting
+        // Individual components can handle auth requirements as needed
         return Promise.reject(error);
     }
 );

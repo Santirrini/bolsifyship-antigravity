@@ -1,3 +1,4 @@
+import React from 'react';
 import { Monitor, Smartphone, Tv, Home, Watch, Headphones, Camera, Gamepad } from 'lucide-react';
 import Link from 'next/link';
 
@@ -35,12 +36,19 @@ export default function Categories() {
                     </a>
                 </div>
 
-                <div className="flex overflow-x-auto snap-x pb-8 md:pb-0 md:grid md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 no-scrollbar">
+                <div
+                    className="flex overflow-x-auto snap-x snap-mandatory pb-8 md:pb-0 md:grid md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 no-scrollbar px-4 md:px-0 -mx-4 md:mx-0"
+                    style={{
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none',
+                        WebkitOverflowScrolling: 'touch'
+                    } as React.CSSProperties}
+                >
                     {categories.map((cat, idx) => (
                         <Link
                             href={`/search?category=${cat.name}`}
                             key={idx}
-                            className="snap-center min-w-[140px] md:min-w-0 group relative flex flex-col items-center p-6 rounded-2xl bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                            className="snap-center flex-shrink-0 w-[140px] md:w-auto md:min-w-0 group relative flex flex-col items-center p-6 rounded-2xl bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer first:ml-0"
                         >
                             <div className="w-16 h-16 rounded-2xl bg-white dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors duration-300 shadow-sm">
                                 <cat.icon className="w-8 h-8 text-gray-600 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300" strokeWidth={1.5} />

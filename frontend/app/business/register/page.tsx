@@ -14,7 +14,7 @@ export default function SellerRegisterPage() {
     const [error, setError] = useState('');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const router = useRouter();
-    const { login } = useAuth();
+    const { login, user } = useAuth(); // Get user from context
 
     const [formData, setFormData] = useState({
         full_name: '',
@@ -25,33 +25,48 @@ export default function SellerRegisterPage() {
         store_description: ''
     });
 
+    // Pre-fill name if user is logged in
+    if (user && !formData.full_name) {
+        setFormData(prev => ({ ...prev, full_name: user.full_name || '' }));
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
-        if (formData.password !== formData.confirmPassword) {
-            setError('Las contraseñas no coinciden');
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const data = await sellerService.onboardSeller({
-                user: {
-                    email: formData.email,
-                    password: formData.password,
-                    full_name: formData.full_name
-                },
-                store: {
+            if (user) {
+                // LOGGED IN USER: Register Store Only (Unified Account)
+                await sellerService.registerStore({
                     name: formData.store_name,
                     description: formData.store_description
-                }
-            });
+                });
 
-            // Login with new seller credentials (overwrites any existing session)
-            // The login function in AuthContext handles the redirection based on role
-            await login();
+                // Refresh user session to update role
+                await login();
+
+            } else {
+                // NEW USER: Full Registration
+                if (formData.password !== formData.confirmPassword) {
+                    throw new Error('Las contraseñas no coinciden');
+                }
+
+                await sellerService.onboardSeller({
+                    user: {
+                        email: formData.email,
+                        password: formData.password,
+                        full_name: formData.full_name
+                    },
+                    store: {
+                        name: formData.store_name,
+                        description: formData.store_description
+                    }
+                });
+
+                // Login with new credentials
+                await login();
+            }
 
         } catch (err: any) {
             setError(err.message);
@@ -75,10 +90,12 @@ export default function SellerRegisterPage() {
                             Volver a Business
                         </Link>
                         <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-                            Crea tu cuenta de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Vendedor</span>
+                            {user ? 'Completa tu Perfil de' : 'Crea tu cuenta de'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Vendedor</span>
                         </h2>
                         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Únete a miles de vendedores exitosos y empieza a vender hoy mismo.
+                            {user
+                                ? `Hola ${user.full_name}, registra tu tienda para comenzar a vender.`
+                                : 'Únete a miles de vendedores exitosos y empieza a vender hoy mismo.'}
                         </p>
                     </div>
 
@@ -92,34 +109,39 @@ export default function SellerRegisterPage() {
                             )}
 
                             <div className="space-y-4">
-                                <div className="relative group">
-                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                                    <input
-                                        id="full_name"
-                                        name="full_name"
-                                        type="text"
-                                        required
-                                        value={formData.full_name}
-                                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                        className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
-                                        placeholder="Nombre Completo"
-                                    />
-                                </div>
+                                {/* Only show user fields if NOT logged in */}
+                                {!user && (
+                                    <>
+                                        <div className="relative group">
+                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                                            <input
+                                                id="full_name"
+                                                name="full_name"
+                                                type="text"
+                                                required
+                                                value={formData.full_name}
+                                                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                                className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+                                                placeholder="Nombre Completo"
+                                            />
+                                        </div>
 
-                                <div className="relative group">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        autoComplete="email"
-                                        required
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
-                                        placeholder="Correo Electrónico"
-                                    />
-                                </div>
+                                        <div className="relative group">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                                            <input
+                                                id="email"
+                                                name="email"
+                                                type="email"
+                                                autoComplete="email"
+                                                required
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+                                                placeholder="Correo Electrónico"
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
                                 <div className="relative group">
                                     <Store className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
@@ -135,35 +157,38 @@ export default function SellerRegisterPage() {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="relative group">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                                        <input
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            required
-                                            value={formData.password}
-                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
-                                            placeholder="Contraseña"
-                                        />
-                                    </div>
+                                {/* Only show password fields if NOT logged in */}
+                                {!user && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="relative group">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                                            <input
+                                                id="password"
+                                                name="password"
+                                                type="password"
+                                                required
+                                                value={formData.password}
+                                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+                                                placeholder="Contraseña"
+                                            />
+                                        </div>
 
-                                    <div className="relative group">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                                        <input
-                                            id="confirmPassword"
-                                            name="confirmPassword"
-                                            type="password"
-                                            required
-                                            value={formData.confirmPassword}
-                                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
-                                            placeholder="Confirmar"
-                                        />
+                                        <div className="relative group">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                                            <input
+                                                id="confirmPassword"
+                                                name="confirmPassword"
+                                                type="password"
+                                                required
+                                                value={formData.confirmPassword}
+                                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                                className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-neutral-700 rounded-xl leading-5 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+                                                placeholder="Confirmar"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
 
                             <div>
@@ -176,7 +201,7 @@ export default function SellerRegisterPage() {
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : (
                                         <>
-                                            Registrar mi Tienda
+                                            {user ? 'Crear Tienda' : 'Registrar mi Tienda'}
                                             <ArrowRight className="ml-2 w-4 h-4" />
                                         </>
                                     )}
@@ -184,27 +209,29 @@ export default function SellerRegisterPage() {
                             </div>
                         </form>
 
-                        <div className="mt-8">
-                            <div className="relative">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-gray-200 dark:border-neutral-700" />
+                        {!user && (
+                            <div className="mt-8">
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-gray-200 dark:border-neutral-700" />
+                                    </div>
+                                    <div className="relative flex justify-center text-sm">
+                                        <span className="px-2 bg-white dark:bg-neutral-900 text-gray-500">
+                                            ¿Ya tienes una cuenta de vendedor?
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="relative flex justify-center text-sm">
-                                    <span className="px-2 bg-white dark:bg-neutral-900 text-gray-500">
-                                        ¿Ya tienes una cuenta de vendedor?
-                                    </span>
-                                </div>
-                            </div>
 
-                            <div className="mt-6">
-                                <button
-                                    onClick={() => setIsLoginModalOpen(true)}
-                                    className="w-full flex justify-center items-center py-3 px-4 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-sm bg-white dark:bg-neutral-800 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all"
-                                >
-                                    Iniciar Sesión
-                                </button>
+                                <div className="mt-6">
+                                    <button
+                                        onClick={() => setIsLoginModalOpen(true)}
+                                        className="w-full flex justify-center items-center py-3 px-4 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-sm bg-white dark:bg-neutral-800 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all"
+                                    >
+                                        Iniciar Sesión
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

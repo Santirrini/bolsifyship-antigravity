@@ -36,5 +36,14 @@ export const sellerService = {
         } catch (error: any) {
             throw new Error(error.response?.data?.detail || 'Error al registrar la tienda');
         }
+    },
+
+    registerStore: async (data: { name: string; description: string; logo_url?: string }) => {
+        try {
+            const response = await api.post('/seller/register', data);
+            return response.data;
+        } catch (error: any) {
+            throw new Error(error.response?.data?.detail || 'Error al crear la tienda');
+        }
     }
 };

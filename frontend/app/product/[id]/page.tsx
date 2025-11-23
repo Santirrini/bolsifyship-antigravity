@@ -34,7 +34,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     return (
         <div className="min-h-screen bg-background">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 pb-24">
-                <div className="mb-8">
+                {/* Mobile Breadcrumbs */}
+                <div className="mb-4 lg:hidden">
                     <Breadcrumbs items={breadcrumbs} />
                 </div>
 
@@ -50,6 +51,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
                     {/* Right Column: Info & Store */}
                     <div className="flex flex-col gap-10">
+                        {/* Desktop Breadcrumbs */}
+                        <div className="hidden lg:block -mb-6">
+                            <Breadcrumbs items={breadcrumbs} />
+                        </div>
                         <ProductInfo product={product} />
 
                         {product.store && (

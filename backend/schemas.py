@@ -85,6 +85,7 @@ class Store(StoreBase):
     rating: float = 0.0
     response_rate: int = 100
     created_at: Optional[str] = None
+    top_products: Optional[List["Product"]] = None
 
     class Config:
         from_attributes = True

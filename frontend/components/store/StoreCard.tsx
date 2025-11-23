@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShieldCheck, Clock, MessageCircle, UserPlus, Check } from 'lucide-react';
-import { Store, MOCK_PRODUCTS, storeService } from '@/services/store';
+import { ShieldCheck, Clock, MessageCircle, UserPlus, Check, Star } from 'lucide-react';
+import { Store, storeService } from '@/services/store';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -16,9 +16,8 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
     const [isFollowing, setIsFollowing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Mock top products for preview (in a real app, these would come from the API)
-    // In a real scenario, we might want to fetch these or have them included in the store object
-    const topProducts = MOCK_PRODUCTS.slice(0, 3);
+    // Use real top_products if available, otherwise fallback to empty array
+    const topProducts = store.top_products || [];
 
     useEffect(() => {
         if (user) {
@@ -57,9 +56,9 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
     };
 
     return (
-        <Link href={`/stores/${store.id}`} className="group block bg-white dark:bg-neutral-900 rounded-3xl overflow-hidden border border-gray-100 dark:border-neutral-800 shadow-sm hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-900/30 transition-all duration-300 hover:-translate-y-1">
+        <Link href={`/store/${store.id}`} className="group block bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-neutral-800 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 hover:-translate-y-1">
             {/* Banner */}
-            <div className="relative h-32 bg-gray-100 dark:bg-neutral-800 overflow-hidden">
+            <div className="relative h-28 bg-gray-100 dark:bg-neutral-800 overflow-hidden">
                 {store.banner_url ? (
                     <Image
                         src={store.banner_url}
@@ -68,41 +67,41 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-r from-gray-100 to-gray-200 dark:from-neutral-800 dark:to-neutral-700" />
+                    <div className="w-full h-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-neutral-800 dark:to-neutral-900" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
 
             {/* Content */}
-            <div className="px-5 pb-5 relative">
-                {/* Logo & Header */}
-                <div className="flex justify-between items-end -mt-12 mb-4">
-                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-4 border-white dark:border-neutral-900 shadow-lg bg-white dark:bg-neutral-800">
+            <div className="px-4 pb-4 relative">
+                {/* Header with Logo and Follow Button */}
+                <div className="flex justify-between items-end -mt-10 mb-3">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border-[3px] border-white dark:border-neutral-900 shadow-md bg-white dark:bg-neutral-800">
                         <Image
-                            src={store.logo_url || `https://ui-avatars.com/api/?name=${store.name}`}
+                            src={store.logo_url || `https://ui-avatars.com/api/?name=${store.name}&background=random`}
                             alt={store.name}
                             fill
                             className="object-cover"
                         />
                     </div>
                     <button
-                        className={`mb-1 flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-full shadow-sm transition-all duration-200 ${isFollowing
-                                ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
-                                : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-500/25'
+                        className={`mb-1 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${isFollowing
+                            ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-900/30'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30'
                             }`}
                         onClick={handleFollow}
                         disabled={isLoading}
                     >
                         {isLoading ? (
-                            <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
                         ) : isFollowing ? (
                             <>
-                                <Check className="w-3.5 h-3.5" />
+                                <Check className="w-3 h-3" />
                                 Siguiendo
                             </>
                         ) : (
                             <>
-                                <UserPlus className="w-3.5 h-3.5" />
+                                <UserPlus className="w-3 h-3" />
                                 Seguir
                             </>
                         )}
@@ -110,42 +109,60 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
                 </div>
 
                 {/* Store Info */}
-                <div className="mb-5">
-                    <div className="flex items-center gap-1.5 mb-1">
-                        <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+                <div className="mb-4">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                        <h3 className="font-bold text-base text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                             {store.name}
                         </h3>
-                        <ShieldCheck className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                        <ShieldCheck className="w-4 h-4 text-blue-500 flex-shrink-0" />
                     </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1 font-medium">{store.category || 'General Store'}</p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <span className="font-medium">{store.category || 'General Store'}</span>
+                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-neutral-700" />
+                        <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                            <span>{store.rating || 'Nuevo'}</span>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Stats */}
-                <div className="flex items-center gap-4 mb-5 text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-neutral-800/50 rounded-xl p-3 border border-gray-100 dark:border-neutral-800">
-                    <div className="flex items-center gap-1.5">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-neutral-800/50 border border-gray-100 dark:border-neutral-800">
                         <Clock className="w-3.5 h-3.5 text-blue-500" />
-                        <span>5 años</span>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Antigüedad</span>
+                            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">5 años</span>
+                        </div>
                     </div>
-                    <div className="w-px h-3 bg-gray-200 dark:bg-neutral-700" />
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-neutral-800/50 border border-gray-100 dark:border-neutral-800">
                         <MessageCircle className="w-3.5 h-3.5 text-green-500" />
-                        <span>{store.response_rate || 98}% Respuestas</span>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Respuestas</span>
+                            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{store.response_rate || 98}%</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Product Preview */}
-                <div className="grid grid-cols-3 gap-2">
-                    {topProducts.map((product) => (
-                        <div key={product.id} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-neutral-800">
-                            <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                        </div>
-                    ))}
-                </div>
+                {topProducts.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2">
+                        {topProducts.map((product: any) => (
+                            <div key={product.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-800">
+                                <Image
+                                    src={product.image || product.images?.[0] || '/placeholder.png'}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-center h-16 bg-gray-50 dark:bg-neutral-800/30 rounded-lg border border-dashed border-gray-200 dark:border-neutral-800">
+                        <span className="text-xs text-gray-400">Sin productos destacados</span>
+                    </div>
+                )}
             </div>
         </Link>
     );

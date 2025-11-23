@@ -13,6 +13,7 @@ export interface Store {
     response_rate?: number;
     owner_id: number;
     created_at?: string;
+    top_products?: any[]; // Using any[] for now to avoid circular dependency or complex type import, but ideally should be Product[]
 }
 
 // Mock data for development/fallback

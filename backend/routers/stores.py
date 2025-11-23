@@ -28,6 +28,14 @@ def get_stores(
         query = query.filter(models.Store.name.contains(search))
         
     stores = query.offset(skip).limit(limit).all()
+    
+    # Populate top_products for each store
+    for store in stores:
+        store.top_products = db.query(models.Product)\
+            .filter(models.Product.store_id == store.id)\
+            .limit(3)\
+            .all()
+            
     return stores
 
 @router.get("/{store_id}", response_model=schemas.Store)

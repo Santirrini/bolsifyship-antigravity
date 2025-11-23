@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import StoreHero from '@/components/store/StoreHero';
 import StoreTabs from '@/components/store/StoreTabs';
 import ProductCard from '@/components/ProductCard';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useStoreData } from '@/hooks/useStoreData';
 
@@ -62,6 +63,17 @@ export default function StorePage() {
     return (
         <div className="min-h-screen bg-white dark:bg-black pb-20">
             <StoreHero store={store} />
+
+            {/* Breadcrumbs */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+                <Breadcrumbs
+                    items={[
+                        { label: 'Tiendas', href: '/stores' },
+                        { label: store.name, href: `/store/${id}` }
+                    ]}
+                />
+            </div>
+
             <StoreTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

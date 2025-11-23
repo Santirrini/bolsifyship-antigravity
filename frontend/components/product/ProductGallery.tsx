@@ -19,12 +19,12 @@ export default function ProductGallery({ image, images = [], name }: { image?: s
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-zinc-50 dark:bg-neutral-900 shadow-sm">
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl">
                 <Image
                     src={selectedImage}
                     alt={name}
                     fill
-                    className="object-contain object-center p-8 transition-transform duration-500 lg:hover:scale-105"
+                    className="object-contain object-center transition-transform duration-500 lg:hover:scale-105"
                     priority
                 />
             </div>

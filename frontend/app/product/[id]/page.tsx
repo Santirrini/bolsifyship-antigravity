@@ -34,12 +34,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     return (
         <div className="min-h-screen bg-background">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 pb-24">
-                {/* Mobile Breadcrumbs */}
-                <div className="mb-4 lg:hidden">
+                {/* Breadcrumbs - Global Navigation */}
+                <div className="mb-8">
                     <Breadcrumbs items={breadcrumbs} />
                 </div>
 
-                <div className="lg:grid lg:grid-cols-2 lg:gap-x-16 lg:items-start">
+                <div className="lg:grid lg:grid-cols-[1.2fr_0.8fr] lg:gap-x-20 lg:items-start">
                     {/* Left Column: Gallery */}
                     <div className="mb-10 lg:mb-0 relative lg:sticky lg:top-24">
                         <ProductGallery
@@ -50,11 +50,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                     </div>
 
                     {/* Right Column: Info & Store */}
-                    <div className="flex flex-col gap-10">
-                        {/* Desktop Breadcrumbs */}
-                        <div className="hidden lg:block -mb-6">
-                            <Breadcrumbs items={breadcrumbs} />
-                        </div>
+                    <div className="flex flex-col gap-10 relative">
                         <ProductInfo product={product} />
 
                         {product.store && (

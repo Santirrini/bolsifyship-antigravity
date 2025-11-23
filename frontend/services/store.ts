@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from './api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -79,7 +79,7 @@ export const MOCK_PRODUCTS = [
 export const storeService = {
     getAllStores: async (params: { skip?: number; limit?: number; category?: string; search?: string } = {}) => {
         try {
-            const response = await axios.get(`${API_URL}/stores/`, { params });
+            const response = await api.get('/stores/', { params });
             return response.data;
         } catch (error) {
             console.warn("Failed to fetch stores, returning mock data", error);
@@ -89,7 +89,7 @@ export const storeService = {
 
     getStore: async (id: number) => {
         try {
-            const response = await axios.get(`${API_URL}/stores/${id}`);
+            const response = await api.get(`/stores/${id}`);
             return response.data;
         } catch (error) {
             console.warn(`Failed to fetch store ${id}, using mock data if ID matches 2`, error);
@@ -101,12 +101,31 @@ export const storeService = {
 
     getStoreProducts: async (id: number) => {
         try {
-            const response = await axios.get(`${API_URL}/stores/${id}/products`);
+            const response = await api.get(`/stores/${id}/products`);
             return response.data;
         } catch (error) {
             console.warn(`Failed to fetch products for store ${id}, using mock data if ID matches 2`, error);
             if (id === 2) return MOCK_PRODUCTS;
             throw error;
+        }
+    },
+
+    followStore: async (storeId: number) => {
+        const response = await api.post(`/stores/${storeId}/follow`);
+        return response.data;
+    },
+
+    unfollowStore: async (storeId: number) => {
+        const response = await api.delete(`/stores/${storeId}/follow`);
+        return response.data;
+    },
+
+    checkIsFollowing: async (storeId: number) => {
+        try {
+            const response = await api.get(`/stores/${storeId}/is_following`);
+            return response.data.is_following;
+        } catch (error) {
+            return false;
         }
     }
 };

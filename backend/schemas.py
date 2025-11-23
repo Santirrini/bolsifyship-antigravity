@@ -74,6 +74,11 @@ class StoreBase(BaseModel):
     description: Optional[str] = None
     logo_url: Optional[str] = None
     banner_url: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    contact_email: Optional[str] = None
+    shipping_policy: Optional[str] = None
+    return_policy: Optional[str] = None
     category: Optional[str] = None
 
 class StoreCreate(StoreBase):

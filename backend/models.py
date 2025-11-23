@@ -46,6 +46,13 @@ class Store(Base):
     rating = Column(Float, default=0.0, index=True) # New: Average rating
     response_rate = Column(Integer, default=100) # New: Response rate percentage
     created_at = Column(String) # ISO format
+    
+    # New fields for store customization
+    phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    contact_email = Column(String, nullable=True)
+    shipping_policy = Column(String, nullable=True)
+    return_policy = Column(String, nullable=True)
 
 class CartItem(Base):
     __tablename__ = "cart_items"

@@ -21,8 +21,12 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
                 return;
             }
 
-            // If user doesn't have the required role, redirect to home
-            if (!allowedRoles.includes(user.role)) {
+            // Check if user has permission
+            // Allow if role matches OR if user is admin and 'admin' is a required role
+            const hasPermission = allowedRoles.includes(user.role) ||
+                (user.is_admin === 1 && allowedRoles.includes('admin'));
+
+            if (!hasPermission) {
                 router.push('/');
                 return;
             }
@@ -42,7 +46,12 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     }
 
     // Don't render anything if not authenticated or wrong role
-    if (!user || !allowedRoles.includes(user.role)) {
+    const hasPermission = user && (
+        allowedRoles.includes(user.role) ||
+        (user.is_admin === 1 && allowedRoles.includes('admin'))
+    );
+
+    if (!hasPermission) {
         return null;
     }
 

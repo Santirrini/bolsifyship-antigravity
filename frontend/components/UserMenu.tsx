@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { User, LogOut, Store, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { User, LogOut, Store, ChevronDown, LayoutDashboard, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function UserMenu() {
@@ -69,6 +69,17 @@ export default function UserMenu() {
                             <User className="w-4 h-4 text-zinc-500" />
                             Mi Perfil
                         </Link>
+
+                        {(user.role === 'admin' || user.is_admin === 1) && (
+                            <Link
+                                href="/admin"
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
+                            >
+                                <ShieldCheck className="w-4 h-4 text-purple-500" />
+                                Panel de Admin
+                            </Link>
+                        )}
 
                         {user.role === 'seller' && (
                             <Link

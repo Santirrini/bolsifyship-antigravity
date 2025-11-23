@@ -74,6 +74,12 @@ def update_seller_store(store_update: schemas.StoreBase, db: Session = Depends(g
     store.name = store_update.name
     store.description = store_update.description
     store.logo_url = store_update.logo_url
+    store.banner_url = store_update.banner_url
+    store.phone = store_update.phone
+    store.address = store_update.address
+    store.contact_email = store_update.contact_email
+    store.shipping_policy = store_update.shipping_policy
+    store.return_policy = store_update.return_policy
     
     db.commit()
     db.refresh(store)

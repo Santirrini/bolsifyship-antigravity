@@ -14,6 +14,11 @@ export interface Store {
     owner_id: number;
     created_at?: string;
     top_products?: any[]; // Using any[] for now to avoid circular dependency or complex type import, but ideally should be Product[]
+    phone?: string;
+    address?: string;
+    contact_email?: string;
+    shipping_policy?: string;
+    return_policy?: string;
 }
 
 // Mock data for development/fallback

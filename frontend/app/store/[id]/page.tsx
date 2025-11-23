@@ -187,30 +187,50 @@ export default function StorePage() {
                                     Contact Information
                                 </h3>
                                 <div className="space-y-3 text-gray-600 dark:text-gray-400">
-                                    <p className="flex items-center gap-3">
-                                        <span className="font-medium text-gray-900 dark:text-white w-16">Email:</span>
-                                        contact@{store.name.toLowerCase().replace(/\s+/g, '')}.com
-                                    </p>
-                                    <p className="flex items-center gap-3">
-                                        <span className="font-medium text-gray-900 dark:text-white w-16">Phone:</span>
-                                        +1 (555) 123-4567
-                                    </p>
-                                    <p className="flex items-center gap-3">
-                                        <span className="font-medium text-gray-900 dark:text-white w-16">Address:</span>
-                                        123 Fashion St, New York, NY
-                                    </p>
+                                    {store.contact_email && (
+                                        <p className="flex items-center gap-3">
+                                            <span className="font-medium text-gray-900 dark:text-white w-16">Email:</span>
+                                            {store.contact_email}
+                                        </p>
+                                    )}
+                                    {store.phone && (
+                                        <p className="flex items-center gap-3">
+                                            <span className="font-medium text-gray-900 dark:text-white w-16">Phone:</span>
+                                            {store.phone}
+                                        </p>
+                                    )}
+                                    {store.address && (
+                                        <p className="flex items-center gap-3">
+                                            <span className="font-medium text-gray-900 dark:text-white w-16">Address:</span>
+                                            {store.address}
+                                        </p>
+                                    )}
+                                    {!store.contact_email && !store.phone && !store.address && (
+                                        <p className="text-gray-500 italic">No contact information provided.</p>
+                                    )}
                                 </div>
                             </div>
                             <div className="p-8 bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-gray-100 dark:border-neutral-800">
                                 <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                     <span className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">🚚</span>
-                                    Shipping Policy
+                                    Store Policies
                                 </h3>
-                                <div className="space-y-3 text-gray-600 dark:text-gray-400">
-                                    <p>• Standard shipping: 10-15 business days</p>
-                                    <p>• Express shipping available (3-5 days)</p>
-                                    <p>• Free shipping on orders over $50</p>
-                                    <p>• International shipping available</p>
+                                <div className="space-y-4 text-gray-600 dark:text-gray-400">
+                                    {store.shipping_policy && (
+                                        <div>
+                                            <h4 className="font-medium text-gray-900 dark:text-white mb-1">Shipping Policy</h4>
+                                            <p className="text-sm">{store.shipping_policy}</p>
+                                        </div>
+                                    )}
+                                    {store.return_policy && (
+                                        <div>
+                                            <h4 className="font-medium text-gray-900 dark:text-white mb-1">Return Policy</h4>
+                                            <p className="text-sm">{store.return_policy}</p>
+                                        </div>
+                                    )}
+                                    {!store.shipping_policy && !store.return_policy && (
+                                        <p className="text-gray-500 italic">No policies provided.</p>
+                                    )}
                                 </div>
                             </div>
                         </div>

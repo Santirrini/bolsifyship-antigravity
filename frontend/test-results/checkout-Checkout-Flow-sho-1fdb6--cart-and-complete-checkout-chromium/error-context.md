@@ -1,0 +1,204 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Bolsifyshop" [ref=e8] [cursor=pointer]:
+            - /url: /
+          - generic [ref=e9]:
+            - link "Inicio" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - text: Inicio
+            - button "Explorar" [ref=e13]:
+              - text: Explorar
+              - img [ref=e14]
+            - link "Categorías" [ref=e16] [cursor=pointer]:
+              - /url: /categories
+              - text: Categorías
+            - link "Ofertas" [ref=e17] [cursor=pointer]:
+              - /url: /offers
+              - text: Ofertas
+            - link "Vender" [ref=e18] [cursor=pointer]:
+              - /url: /business
+              - text: Vender
+        - generic [ref=e20]:
+          - textbox "Buscar productos..." [ref=e21]
+          - img [ref=e22]
+        - generic [ref=e25]:
+          - button [ref=e26]:
+            - img [ref=e27]
+          - button "Iniciar Sesión" [ref=e29]
+          - button "Crear Cuenta" [ref=e30]
+          - button "1" [ref=e31]:
+            - img [ref=e32]
+            - generic [ref=e35]: "1"
+    - main [ref=e36]:
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - img [ref=e43]
+          - generic [ref=e48]:
+            - heading "Envío Gratis" [level=3] [ref=e49]
+            - paragraph [ref=e50]: En pedidos superiores a $50
+        - generic [ref=e51]:
+          - img [ref=e53]
+          - generic [ref=e56]:
+            - heading "Pago Seguro" [level=3] [ref=e57]
+            - paragraph [ref=e58]: 100% protección en tu compra
+        - generic [ref=e59]:
+          - img [ref=e61]
+          - generic [ref=e66]:
+            - heading "Devoluciones Fáciles" [level=3] [ref=e67]
+            - paragraph [ref=e68]: 30 días de garantía
+        - generic [ref=e69]:
+          - img [ref=e71]
+          - generic [ref=e73]:
+            - heading "Soporte 24/7" [level=3] [ref=e74]
+            - paragraph [ref=e75]: Atención al cliente dedicada
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - heading "Categorías Populares" [level=3] [ref=e82]
+            - paragraph [ref=e83]: Explora nuestras colecciones más visitadas
+          - link "Ver todas →" [ref=e84] [cursor=pointer]:
+            - /url: /categories
+            - text: Ver todas
+            - generic [ref=e85]: →
+        - generic [ref=e86]:
+          - link "Electrónica" [ref=e87] [cursor=pointer]:
+            - /url: /search?category=Electrónica
+            - img [ref=e89]
+            - generic [ref=e91]: Electrónica
+          - link "Móviles" [ref=e92] [cursor=pointer]:
+            - /url: /search?category=Móviles
+            - img [ref=e94]
+            - generic [ref=e96]: Móviles
+          - link "Televisores" [ref=e97] [cursor=pointer]:
+            - /url: /search?category=Televisores
+            - img [ref=e99]
+            - generic [ref=e102]: Televisores
+          - link "Hogar" [ref=e103] [cursor=pointer]:
+            - /url: /search?category=Hogar
+            - img [ref=e105]
+            - generic [ref=e108]: Hogar
+          - link "Relojes" [ref=e109] [cursor=pointer]:
+            - /url: /search?category=Relojes
+            - img [ref=e111]
+            - generic [ref=e116]: Relojes
+          - link "Audio" [ref=e117] [cursor=pointer]:
+            - /url: /search?category=Audio
+            - img [ref=e119]
+            - generic [ref=e121]: Audio
+          - link "Cámaras" [ref=e122] [cursor=pointer]:
+            - /url: /search?category=Cámaras
+            - img [ref=e124]
+            - generic [ref=e127]: Cámaras
+          - link "Gaming" [ref=e128] [cursor=pointer]:
+            - /url: /search?category=Gaming
+            - img [ref=e130]
+            - generic [ref=e132]: Gaming
+      - generic [ref=e133]:
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - heading "Productos Destacados" [level=3] [ref=e136]
+            - paragraph [ref=e137]: Selección exclusiva para esta temporada
+          - generic [ref=e138]:
+            - button "Todos" [ref=e139]
+            - button "Ofertas" [ref=e140]
+            - button "Nuevos" [ref=e141]
+        - link "Ver Todos los Productos" [ref=e143] [cursor=pointer]:
+          - /url: /search
+      - generic [ref=e147]:
+        - heading "Oferta Especial de Temporada" [level=3] [ref=e148]
+        - paragraph [ref=e149]: Aprovecha descuentos increíbles en toda la tienda por tiempo limitado.
+        - link "Ver Descuentos" [ref=e150] [cursor=pointer]:
+          - /url: /search?on_sale=true
+      - generic [ref=e156]:
+        - generic [ref=e157]:
+          - heading "Suscríbete a nuestro Newsletter" [level=2] [ref=e158]
+          - paragraph [ref=e159]: Recibe las últimas novedades, ofertas exclusivas y descuentos especiales directamente en tu correo.
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - img [ref=e163]
+              - textbox "Tu correo electrónico" [ref=e166]
+            - button "Suscribirse" [ref=e167]
+          - paragraph [ref=e168]: Al suscribirte aceptas nuestros términos y condiciones. Puedes cancelar en cualquier momento.
+    - contentinfo [ref=e169]:
+      - generic [ref=e170]:
+        - generic [ref=e171]:
+          - generic [ref=e172]:
+            - heading "Bolsifyshop" [level=3] [ref=e173]
+            - paragraph [ref=e174]: Tu destino premium para compras online. Calidad, estilo y los mejores precios en un solo lugar.
+            - generic [ref=e175]:
+              - link [ref=e176] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e177]
+              - link [ref=e179] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e180]
+              - link [ref=e183] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e184]
+              - link [ref=e186] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e187]
+          - generic [ref=e190]:
+            - heading "Enlaces Rápidos" [level=4] [ref=e191]
+            - list [ref=e192]:
+              - listitem [ref=e193]:
+                - link "Sobre Nosotros" [ref=e194] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e195]:
+                - link "Nuestras Tiendas" [ref=e196] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e197]:
+                - link "Blog" [ref=e198] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e199]:
+                - link "Contacto" [ref=e200] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e201]:
+                - link "Mapa del Sitio" [ref=e202] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e203]:
+                - link "Vender en Bolsifyshop" [ref=e204] [cursor=pointer]:
+                  - /url: /business
+          - generic [ref=e205]:
+            - heading "Atención al Cliente" [level=4] [ref=e206]
+            - list [ref=e207]:
+              - listitem [ref=e208]:
+                - link "Centro de Ayuda" [ref=e209] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e210]:
+                - link "Envíos y Devoluciones" [ref=e211] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e212]:
+                - link "Términos y Condiciones" [ref=e213] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e214]:
+                - link "Política de Privacidad" [ref=e215] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e216]:
+                - link "Rastrea tu Orden" [ref=e217] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e218]:
+            - heading "Contáctanos" [level=4] [ref=e219]
+            - list [ref=e220]:
+              - listitem [ref=e221]:
+                - img [ref=e222]
+                - generic [ref=e225]: Av. Principal 123, Ciudad de México, México
+              - listitem [ref=e226]:
+                - img [ref=e227]
+                - generic [ref=e229]: +52 55 1234 5678
+              - listitem [ref=e230]:
+                - img [ref=e231]
+                - generic [ref=e234]: contacto@bolsifyshop.com
+        - paragraph [ref=e236]: © 2025 Bolsifyshop. Todos los derechos reservados.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e242] [cursor=pointer]:
+    - img [ref=e243]
+  - alert [ref=e246]
+```

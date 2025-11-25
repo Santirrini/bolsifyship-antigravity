@@ -16,8 +16,7 @@ load_dotenv()
 
 # Import the Base from your models
 from models import Base
-# Ensure all models are imported here so they are registered with Base.metadata
-# from models import User, Product, ... (if they are all in models.py, just importing models is enough if models.py imports them)
+from database import SQLALCHEMY_DATABASE_URL
 
 config = context.config
 
@@ -26,10 +25,9 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Override sqlalchemy.url with the one from environment variables
-database_url = os.getenv("DATABASE_URL")
-if database_url:
-    config.set_main_option("sqlalchemy.url", database_url)
+# Override sqlalchemy.url with the one from environment variables or database.py fallback
+database_url = os.getenv("DATABASE_URL", SQLALCHEMY_DATABASE_URL)
+config.set_main_option("sqlalchemy.url", database_url)
 
 target_metadata = Base.metadata
 
@@ -78,7 +76,9 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, 
+            target_metadata=target_metadata,
+            render_as_batch=True
         )
 
         with context.begin_transaction():

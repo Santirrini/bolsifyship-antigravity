@@ -48,6 +48,27 @@ El archivo `docker-compose.yml` ya configura variables por defecto. Para producc
 - `ALLOWED_ORIGINS`: El dominio de tu frontend (ej. `https://tusitio.com`).
 - `SECRET_KEY`: Una clave segura para JWT.
 
-## 4. Siguientes Pasos
+## 4. Gestión de Datos de Prueba
+
+Para desarrollo y testing, puedes crear datos de prueba:
+
+### Crear usuarios de prueba
+```bash
+docker-compose exec backend python create_admin.py
+docker-compose exec backend python create_seller_bolsify.py
+```
+
+**Credenciales:**
+- Admin: `admin@bolsifyshop.com` / `admin123`
+- Seller: `bolsifyshop@hotmail.com` / `bolsify123`
+
+### Crear productos de prueba
+```bash
+docker-compose exec backend python seed.py
+```
+
+⚠️ **ADVERTENCIA**: `seed.py` borra TODAS las tablas y datos antes de crear productos de prueba. Solo úsalo en desarrollo.
+
+## 5. Siguientes Pasos
 - Prueba el flujo de registro y login en el entorno Docker.
 - Verifica que las imágenes se carguen correctamente.

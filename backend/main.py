@@ -21,22 +21,24 @@ app = FastAPI()
 # Migration for is_admin
 @app.on_event("startup")
 def startup_db_client():
-    try:
-        with engine.connect() as connection:
-            try:
-                connection.execute(text("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"))
-            except OperationalError:
-                pass
-            try:
-                connection.execute(text("ALTER TABLE users ADD COLUMN role STRING DEFAULT 'customer'"))
-            except OperationalError:
-                pass
-            try:
-                connection.execute(text("ALTER TABLE products ADD COLUMN store_id INTEGER DEFAULT NULL"))
-            except OperationalError:
-                pass
-    except Exception as e:
-        print(f"Migration error: {e}")
+    # Legacy migrations - Disabled by default in favor of Alembic
+    if os.getenv("RUN_LEGACY_MIGRATIONS") == "true":
+        try:
+            with engine.connect() as connection:
+                try:
+                    connection.execute(text("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"))
+                except OperationalError:
+                    pass
+                try:
+                    connection.execute(text("ALTER TABLE users ADD COLUMN role STRING DEFAULT 'customer'"))
+                except OperationalError:
+                    pass
+                try:
+                    connection.execute(text("ALTER TABLE products ADD COLUMN store_id INTEGER DEFAULT NULL"))
+                except OperationalError:
+                    pass
+        except Exception as e:
+            print(f"Migration error: {e}")
 
 # CORS
 app.add_middleware(

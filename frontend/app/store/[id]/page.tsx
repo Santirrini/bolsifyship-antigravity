@@ -90,7 +90,7 @@ export default function StorePage() {
                                     View All
                                 </button>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                                 {products.slice(0, 4).map((product) => (
                                     <ProductCard
                                         key={product.id}
@@ -119,7 +119,7 @@ export default function StorePage() {
                         {/* Featured Products Section */}
                         <section>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Featured Products</h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                                 {products.slice(0, 8).map((product) => (
                                     <ProductCard
                                         key={product.id}
@@ -153,7 +153,7 @@ export default function StorePage() {
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Products</h2>
                             <span className="text-gray-500 dark:text-gray-400 text-sm">{products.length} products</span>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                             {products.map((product) => (
                                 <ProductCard
                                     key={product.id}

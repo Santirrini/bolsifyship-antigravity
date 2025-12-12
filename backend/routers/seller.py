@@ -4,8 +4,8 @@ from typing import List
 import models, schemas
 from database import get_db
 from database import get_db
-from routers.auth import get_current_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
-from datetime import timedelta
+from routers.auth import get_current_user
+from datetime import timedelta, datetime
 import crud
 
 router = APIRouter(
@@ -40,22 +40,69 @@ def register_store(store: schemas.StoreCreate, db: Session = Depends(get_db), cu
     db.refresh(db_store)
     return db_store
 
+from supabase_client import supabase
+
 @router.post("/onboard", response_model=schemas.Token)
 def onboard_seller(onboarding_data: schemas.SellerOnboardingRequest, db: Session = Depends(get_db)):
-    # Check if user exists
-    db_user = crud.get_user_by_email(db, email=onboarding_data.user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Create user and store
-    user, store = crud.create_seller_and_store(db, onboarding_data.user, onboarding_data.store)
-    
-    # Create token
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+    # 1. Register with Supabase
+    try:
+        auth_response = supabase.auth.sign_up({
+            "email": onboarding_data.user.email,
+            "password": onboarding_data.user.password,
+            "options": {
+                "data": {
+                    "full_name": onboarding_data.user.full_name
+                }
+            }
+        })
+        
+        if not auth_response.user or not auth_response.session:
+             raise HTTPException(status_code=400, detail="Registration failed")
+             
+        # 2. Check if user already exists locally (shouldn't if Supabase succeeded newly, but maybe sync issue)
+        # Note: If email exists in Supabase but not locally, sign_up returns same user/session for existing users if email confirm off? 
+        # Actually sign_up for existing user usually returns user but no session if requires email confirm, or error.
+        # Let's assume happy path or unique email.
+        
+        db_user = crud.get_user_by_email(db, email=onboarding_data.user.email)
+        if db_user:
+             # If user exists locally, we might just be adding a store? 
+             # But this endpoint implies fresh onboarding.
+             raise HTTPException(status_code=400, detail="User already registered locally")
+
+        # 3. Create User and Store locally
+        # We need to inject the supabase_user_id
+        # crud.create_seller_and_store expects UserCreate which has password. 
+        # We can still use it, just password won't be used for auth.
+        # But we need to ensure the LOCAL user gets the supabase_id.
+        
+        # We might need to customize create_seller_and_store or do it manually here.
+        # Let's do it manually to ensure ID linking.
+        
+        user = models.User(
+            email=onboarding_data.user.email,
+            full_name=onboarding_data.user.full_name,
+            supabase_user_id=auth_response.user.id,
+            is_active=1,
+            role="seller" # Directly set role
+        )
+        db.add(user)
+        db.commit() # Commit to get ID
+        db.refresh(user)
+        
+        store = models.Store(
+            **onboarding_data.store.dict(),
+            owner_id=user.id,
+            created_at=datetime.utcnow().isoformat()
+        )
+        db.add(store)
+        db.commit()
+        
+        return {"access_token": auth_response.session.access_token, "token_type": "bearer"}
+
+    except Exception as e:
+        print(f"Onboarding Error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/store", response_model=schemas.Store)

@@ -7,28 +7,20 @@ import { bannerService, Banner } from '@/services/bannerService';
 
 const defaultSlides = [
     {
-        image_url: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop",
-        subtitle: "NUEVA COLECCIÓN 2024",
-        title: "Estilo que define",
-        highlight_text: "tu personalidad",
-        description: "Descubre las últimas tendencias en moda y accesorios con descuentos exclusivos de hasta un 50%.",
+        image_url: "/hero-image.png",
+        subtitle: "NUEVA COLECCIÓN 2025",
+        title: "Redefine tu",
+        highlight_text: "Estilo Digital",
+        description: "Descubre la fusión perfecta entre moda y tecnología. Calidad premium, diseños exclusivos y envío inmediato.",
         link_url: "/search"
     },
     {
         image_url: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=2001&auto=format&fit=crop",
-        subtitle: "TECNOLOGÍA AVANZADA",
-        title: "El futuro en",
+        subtitle: "TECNOLOGÍA DE PUNTA",
+        title: "Innovación en",
         highlight_text: "tus manos",
-        description: "Encuentra los gadgets más innovadores y lleva tu productividad al siguiente nivel.",
+        description: "Explora nuestra selección curada de gadgets smart tech.",
         link_url: "/search?category=Electronics"
-    },
-    {
-        image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop",
-        subtitle: "OFERTAS ESPECIALES",
-        title: "Tiempo de",
-        highlight_text: "renovarse",
-        description: "Aprovecha nuestros precios de lanzamiento en relojes inteligentes y accesorios.",
-        link_url: "/search?on_sale=true"
     }
 ];
 
@@ -111,33 +103,33 @@ export default function Hero() {
                     <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 max-w-4xl mx-auto">
                         <div className={`transition-all duration-1000 delay-300 transform ${index === current ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                             {slide.subtitle && (
-                                <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-semibold mb-6">
+                                <span className="inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs tracking-widest font-bold uppercase mb-6 shadow-xl">
                                     {slide.subtitle}
                                 </span>
                             )}
-                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight drop-shadow-lg">
+                            <h2 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-none tracking-tighter drop-shadow-2xl">
                                 {slide.title} <br />
                                 {slide.highlight_text && (
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 animate-gradient-x">
                                         {slide.highlight_text}
                                     </span>
                                 )}
                             </h2>
                             {slide.description && (
-                                <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl drop-shadow-md font-light mx-auto">
+                                <p className="text-lg md:text-xl text-gray-100 mb-10 max-w-xl mx-auto drop-shadow-lg font-medium leading-relaxed">
                                     {slide.description}
                                 </p>
                             )}
-                            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+                            <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto justify-center">
                                 <Link
                                     href={getLinkUrl(slide)}
                                     onClick={() => handleSlideClick(slide)}
-                                    className="group bg-white text-zinc-900 hover:bg-zinc-100 font-bold py-3 px-8 rounded-full transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg"
+                                    className="group bg-white text-black hover:bg-gray-100 font-bold py-4 px-10 rounded-full transition-all transform hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(255,255,255,0.3)] flex items-center justify-center gap-2"
                                 >
                                     Comprar Ahora
-                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                    <ArrowRight className="w-5 h-5 group-hover:bg-black group-hover:text-white rounded-full p-0.5 transition-colors" />
                                 </Link>
-                                <Link href="/search" className="bg-transparent border-2 border-white/40 hover:bg-white/20 text-white font-semibold py-3 px-8 rounded-full transition-all backdrop-blur-sm flex items-center justify-center">
+                                <Link href="/search" className="bg-black/30 border border-white/30 hover:bg-black/50 text-white font-semibold py-4 px-10 rounded-full transition-all backdrop-blur-md flex items-center justify-center hover:border-white/60">
                                     Ver Catálogo
                                 </Link>
                             </div>

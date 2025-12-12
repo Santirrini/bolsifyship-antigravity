@@ -36,8 +36,8 @@ export default function HomePage() {
               <button className="p-2 -ml-2 text-gray-600 dark:text-gray-300 md:hidden">
                 <Menu className="h-6 w-6" />
               </button>
-              <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400">
-                BOLSIFY
+              <h1 className="text-xl font-bold tracking-tighter">
+                BOLSIFYSHOP
               </h1>
             </div>
 
@@ -62,7 +62,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </nav>
+      </nav >
 
       <main>
         {/* Dynamic Hero Section */}
@@ -143,6 +143,6 @@ export default function HomePage() {
           <p className="text-gray-500 dark:text-gray-400">© 2025 Bolsify. All rights reserved.</p>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }

@@ -19,9 +19,20 @@ class OrderSerializer(serializers.ModelSerializer):
             "id", "user", "user_email", "items", "total_amount",
             "status", "shipping_address", "created_at", "updated_at"
         ]
-        read_only_fields = ["user", "created_at", "updated_at"]
+        read_only_fields = ["user", "created_at", "updated_at", "total_amount"]
+    
     
     def create(self, validated_data):
-        # Logic to handle order creation will go here (usually involving populating items)
-        # For now, standard creation
-        return super().create(validated_data)
+        items_data = self.initial_data.get('items', [])
+        
+        # Calculate total amount from items
+        total_amount = sum(
+            float(item.get('price', 0)) * int(item.get('quantity', 1)) 
+            for item in items_data
+        )
+        validated_data['total_amount'] = total_amount
+
+        order = Order.objects.create(**validated_data)
+        for item_data in items_data:
+            OrderItem.objects.create(order=order, **item_data)
+        return order

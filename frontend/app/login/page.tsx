@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import api from '@/services/api';
+import { authService } from '@/services/auth';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 
@@ -20,12 +20,16 @@ export default function LoginPage() {
         setIsLoading(true);
         try {
             const formData = new FormData();
-            formData.append('username', email);
+            formData.append('username', email); // dj-rest-auth standard login often uses 'username' field even for email
             formData.append('password', password);
+            // If backend is configured for email login, this might still be 'username' key or 'email' key. 
+            // Standard django-rest-auth uses 'username' or configures it. 
+            // Let's assume 'username' for now as per previous code, but check if email is needed.
 
-            await api.post('/auth/token', formData);
-            await login();
+            await authService.login(formData);
+            await login(); // Context update
         } catch (err) {
+            console.error(err);
             setError('Invalid email or password');
         } finally {
             setIsLoading(false);

@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, filters
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product, Store, Banner
 from .serializers import ProductSerializer, StoreSerializer, BannerSerializer
@@ -19,7 +20,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     search_fields = ["name", "description", "sku"]
     ordering_fields = ["price", "rating", "created_at"]
 
-    @viewsets.action(detail=False, methods=["GET"], url_path="my_products")
+    @action(detail=False, methods=["GET"], url_path="my_products")
     def my_products(self, request):
         """
         Return products belonging to the stores owned by the current user.

@@ -9,6 +9,17 @@ def main():
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
+
+    # READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+    if os.environ.get("DJANGO_READ_DOT_ENV_FILE") != "False":
+        try:
+             # Basic usage of django-environ to read .env file for local dev
+            import environ
+            env = environ.Env()
+            env.read_env(str(Path(__file__).parent / ".env"))
+        except ImportError:
+            pass
+            
     try:
         from django.core.management import execute_from_command_line  # noqa: PLC0415
     except ImportError as exc:

@@ -1,8 +1,10 @@
 import { api } from './api';
 
 export interface OrderItem {
-    product_id: number;
+    product: number;
     quantity: number;
+    title: string;
+    price: string;
 }
 
 export interface CreateOrderData {

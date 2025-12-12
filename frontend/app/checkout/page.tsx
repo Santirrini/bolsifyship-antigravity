@@ -47,8 +47,10 @@ export default function CheckoutPage() {
         try {
             const orderData = {
                 items: cart.map(item => ({
-                    product_id: item.id,
-                    quantity: item.quantity
+                    product: item.id,
+                    title: item.name,
+                    quantity: item.quantity,
+                    price: item.price.toString()
                 })),
                 shipping_address: shippingAddress,
                 payment_token: paymentToken

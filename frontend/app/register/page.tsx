@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { authService } from '@/services/auth';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function RegisterPage() {
@@ -16,26 +17,18 @@ export default function RegisterPage() {
         e.preventDefault();
         setError('');
         try {
-            const res = await fetch('http://localhost:8000/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    full_name: fullName,
-                }),
+            await authService.register({
+                username: email.split('@')[0], // Generate a username if needed, or if configured to use email as username
+                email,
+                password,
+                // full_name might need to be split into first_name/last_name or handled by backend signal
             });
-
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.detail || 'Registration failed');
-            }
 
             router.push('/login');
         } catch (err: any) {
-            setError(err.message);
+            // Error handling for axios error
+            const msg = err.response?.data?.detail || err.response?.data?.email?.[0] || 'Registration failed';
+            setError(msg);
         }
     };
 

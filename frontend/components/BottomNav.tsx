@@ -1,18 +1,15 @@
 'use client';
 
-import { Home, Search, Heart, User, Menu } from 'lucide-react';
+import { Home, Search, Heart, User } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useUI } from '@/context/UIContext';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 
 export default function BottomNav() {
     const { openWishlist, openLoginModal } = useUI();
     const { user } = useAuth();
     const pathname = usePathname();
-    // We can use this to toggle a mobile menu if needed, or just link to categories
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const isActive = (path: string) => pathname === path;
 

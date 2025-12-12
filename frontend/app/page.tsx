@@ -1,23 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { catalogService, Product } from '@/services/catalog';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { useUI } from '@/context/UIContext';
-import { ShoppingCart, Search, Menu, ArrowRight } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
+import Navbar from '@/components/Navbar';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { openLoginModal } = useUI();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const data = await catalogService.getProducts();
-        setProducts(data);
+        // Map backend 'name' field to frontend 'title' field for ProductCard compatibility
+        const mappedData = data.map(p => ({
+          ...p,
+          title: p.title || p.name || 'Product',
+        }));
+        setProducts(mappedData);
       } catch (error) {
         console.error('Failed to fetch products', error);
       } finally {
@@ -30,44 +33,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors duration-300 font-sans selection:bg-blue-500 selection:text-white">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <button className="p-2 -ml-2 text-gray-600 dark:text-gray-300 md:hidden">
-                <Menu className="h-6 w-6" />
-              </button>
-              <h1 className="text-xl font-bold tracking-tighter">
-                BOLSIFYSHOP
-              </h1>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="#" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Shop</Link>
-              <Link href="#" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Categories</Link>
-              <Link href="#" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">New Arrivals</Link>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
-                <Search className="h-5 w-5" />
-              </button>
-              <Link href="/cart" className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors relative">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full"></span>
-              </Link>
-              <ThemeToggle />
-              <button
-                onClick={() => openLoginModal('login')}
-                className="ml-2 px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-              >
-                Login
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav >
+      {/* Use shared Navbar component */}
+      <Navbar />
 
       <main>
         {/* Dynamic Hero Section */}
@@ -96,9 +63,9 @@ export default function HomePage() {
                 <Link href="#products" className="px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform flex items-center justify-center gap-2">
                   Start Shopping <ArrowRight className="w-5 h-5" />
                 </Link>
-                <button className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold text-lg hover:bg-white/20 transition-colors">
+                <Link href="/search" className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold text-lg hover:bg-white/20 transition-colors text-center">
                   View Lookbook
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -111,7 +78,7 @@ export default function HomePage() {
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Trending Now</h3>
               <p className="mt-2 text-gray-500 dark:text-gray-400">Curated picks just for you</p>
             </div>
-            <Link href="#" className="hidden md:flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+            <Link href="/search" className="hidden md:flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline">
               View all products <ArrowRight size={16} />
             </Link>
           </div>
@@ -126,6 +93,13 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500 dark:text-gray-400 text-lg">No products available yet.</p>
+              <Link href="/search" className="mt-4 inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                Explore our catalog <ArrowRight size={16} />
+              </Link>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
               {products.map((product) => (
@@ -135,7 +109,7 @@ export default function HomePage() {
           )}
 
           <div className="mt-12 text-center md:hidden">
-            <Link href="#" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+            <Link href="/search" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline">
               View all products <ArrowRight size={16} />
             </Link>
           </div>
@@ -145,9 +119,10 @@ export default function HomePage() {
       {/* Simple Footer */}
       <footer className="bg-white dark:bg-neutral-900 border-t border-gray-100 dark:border-neutral-800 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-gray-500 dark:text-gray-400">© 2025 Bolsify. All rights reserved.</p>
+          <p className="text-gray-500 dark:text-gray-400">© 2025 Bolsifyshop. All rights reserved.</p>
         </div>
       </footer>
-    </div >
+    </div>
   );
 }
+

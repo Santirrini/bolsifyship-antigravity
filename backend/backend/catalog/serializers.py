@@ -11,8 +11,8 @@ class StoreSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source="store.name", read_only=True)
-
     images = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -23,6 +23,29 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku", "images", "created_at"
         ]
         read_only_fields = ["rating", "reviews_count", "sales_count", "created_at"]
+
+    def get_image(self, obj):
+        """
+        Returns the image URL. If the stored image path is an external URL,
+        return it directly. Otherwise, build the full media URL.
+        """
+        if not obj.image:
+            return None
+        
+        # Get the stored image name/path
+        image_path = str(obj.image.name) if hasattr(obj.image, 'name') else str(obj.image)
+        
+        # If it's already an absolute URL, return it directly
+        if image_path.startswith("http://") or image_path.startswith("https://"):
+            return image_path
+        
+        # For local files, build the absolute URL
+        request = self.context.get("request")
+        if request and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url)
+        
+        return None
+
 
     def get_images(self, obj):
         if not obj.images:

@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 // dj-rest-auth provides /api/auth/user/ for current user
                 const res = await api.get('/api/auth/user/');
                 setUser(res.data);
-            } catch (error) {
+            } catch {
                 // Not logged in or session expired
                 setUser(null);
             }

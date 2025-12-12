@@ -60,7 +60,7 @@ const OfferSection: React.FC<OfferSectionProps> = ({ title, subtitle, endpoint }
 
             <div className="flex overflow-x-auto space-x-6 pb-4 scrollbar-hide">
                 {products.map((product) => (
-                    <div key={product.id} className="min-w-[280px] md:min-w-[320px]">
+                    <div key={product.id} className="min-w-[160px] md:min-w-[280px]">
                         <ProductCard
                             product={{
                                 id: product.id,

@@ -18,7 +18,7 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { cartCount } = useCart();
   const { openCart, openWishlist, openLoginModal, isLoginOpen, closeLoginModal, authView } = useUI();
 

@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import StoreHero from '@/components/store/StoreHero';
 import StoreTabs from '@/components/store/StoreTabs';
-import ProductCard from '@/components/ProductCard';
+import { ProductCard } from '@/components/ProductCard'; // Corrected import
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useStoreData } from '@/hooks/useStoreData';
@@ -94,14 +94,18 @@ export default function StorePage() {
                                 {products.slice(0, 4).map((product) => (
                                     <ProductCard
                                         key={product.id}
-                                        id={product.id}
-                                        title={product.name}
-                                        price={product.price}
-                                        oldPrice={product.discount_price}
-                                        rating={product.rating || 0}
-                                        reviews={product.reviews || 0}
-                                        image={product.image}
-                                        tag={product.season}
+                                        product={{
+                                            id: product.id,
+                                            title: product.name,
+                                            description: product.description || '',
+                                            price: product.price as any,
+                                            discount_price: product.discount_price as any,
+                                            image: product.image,
+                                            rating: product.rating,
+                                            reviews_count: product.reviews || 0,
+                                            store: store.id,
+                                            category: product.season
+                                        }}
                                     />
                                 ))}
                                 {products.length === 0 && (
@@ -119,14 +123,18 @@ export default function StorePage() {
                                 {products.slice(0, 8).map((product) => (
                                     <ProductCard
                                         key={product.id}
-                                        id={product.id}
-                                        title={product.name}
-                                        price={product.price}
-                                        oldPrice={product.discount_price}
-                                        rating={product.rating || 0}
-                                        reviews={product.reviews || 0}
-                                        image={product.image}
-                                        tag={product.season}
+                                        product={{
+                                            id: product.id,
+                                            title: product.name,
+                                            description: product.description || '',
+                                            price: product.price as any,
+                                            discount_price: product.discount_price as any,
+                                            image: product.image,
+                                            rating: product.rating,
+                                            reviews_count: product.reviews || 0,
+                                            store: store.id,
+                                            category: product.season
+                                        }}
                                     />
                                 ))}
                                 {products.length === 0 && (
@@ -149,14 +157,18 @@ export default function StorePage() {
                             {products.map((product) => (
                                 <ProductCard
                                     key={product.id}
-                                    id={product.id}
-                                    title={product.name}
-                                    price={product.price}
-                                    oldPrice={product.discount_price}
-                                    rating={product.rating || 0}
-                                    reviews={product.reviews || 0}
-                                    image={product.image}
-                                    tag={product.season}
+                                    product={{
+                                        id: product.id,
+                                        title: product.name,
+                                        description: product.description || '',
+                                        price: product.price as any,
+                                        discount_price: product.discount_price as any,
+                                        image: product.image,
+                                        rating: product.rating,
+                                        reviews_count: product.reviews || 0,
+                                        store: store.id,
+                                        category: product.season
+                                    }}
                                 />
                             ))}
                         </div>

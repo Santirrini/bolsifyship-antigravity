@@ -42,3 +42,4 @@ class ProductViewSet(viewsets.ModelViewSet):
 class BannerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Banner.objects.filter(is_active=True).order_by("order")
     serializer_class = BannerSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

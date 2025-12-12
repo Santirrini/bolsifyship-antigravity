@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard';
+import { ProductCard } from './ProductCard';
 import Link from 'next/link';
 
 export default function FeaturedProducts() {
@@ -76,7 +76,21 @@ export default function FeaturedProducts() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filteredProducts.map((product, idx) => (
-                    <ProductCard key={idx} {...product} title={product.name} />
+                    <ProductCard
+                        key={idx}
+                        product={{
+                            id: product.id,
+                            title: product.name,
+                            description: product.description || '',
+                            price: product.price,
+                            discount_price: product.discount_price,
+                            image: product.image,
+                            rating: product.rating,
+                            reviews_count: product.reviews,
+                            store: 1, // Fallback
+                            category: product.category
+                        }}
+                    />
                 ))}
             </div>
 

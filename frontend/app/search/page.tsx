@@ -5,7 +5,7 @@ import { Search, ArrowLeft, Filter, X, Star, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
-import ProductCard from '@/components/ProductCard';
+import { ProductCard } from '@/components/ProductCard'; // Corrected import
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Product } from '@/types/product';
@@ -51,8 +51,6 @@ function SearchContent() {
             console.error("Failed to fetch wishlist", error);
         }
     };
-
-
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -259,25 +257,23 @@ function SearchContent() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {results.map((item) => {
-                                    const displayPrice = item.discount_price || item.price;
-                                    const oldPrice = item.discount_price ? item.price : undefined;
-                                    const tag = item.discount_price ? `-${Math.round((1 - item.discount_price! / item.price) * 100)}%` : undefined;
-
-                                    return (
-                                        <ProductCard
-                                            key={item.id}
-                                            id={item.id}
-                                            title={item.name}
-                                            price={displayPrice}
-                                            oldPrice={oldPrice}
-                                            rating={item.rating}
-                                            reviews={item.reviews}
-                                            image={item.image || ''}
-                                            tag={tag}
-                                        />
-                                    );
-                                })}
+                                {results.map((item) => (
+                                    <ProductCard
+                                        key={item.id}
+                                        product={{
+                                            id: item.id,
+                                            title: item.name,
+                                            description: item.description || '',
+                                            price: item.price.toString(), // Ensure string
+                                            discount_price: item.discount_price ? item.discount_price.toString() : undefined,
+                                            image: item.image || '',
+                                            rating: item.rating,
+                                            reviews_count: item.reviews, // Assume item.reviews is count
+                                            store: item.store_id || 1, // Fallback
+                                            category: item.category
+                                        }}
+                                    />
+                                ))}
                             </div>
                         )}
 

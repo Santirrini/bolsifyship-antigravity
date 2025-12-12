@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ProductCard from "./ProductCard";
+import { ProductCard } from "./ProductCard";
 
 interface Product {
     id: number;
     name: string;
     description: string;
-    price: number;
-    discount_price?: number;
+    price: number | string;
+    discount_price?: number | string;
     category: string;
     rating: number;
     reviews: number;
@@ -62,14 +62,18 @@ const OfferSection: React.FC<OfferSectionProps> = ({ title, subtitle, endpoint }
                 {products.map((product) => (
                     <div key={product.id} className="min-w-[280px] md:min-w-[320px]">
                         <ProductCard
-                            id={product.id}
-                            title={product.name}
-                            price={product.price}
-                            oldPrice={product.discount_price}
-                            rating={product.rating}
-                            reviews={product.reviews}
-                            image={product.image}
-                            tag={product.discount_price ? "OFERTA" : undefined}
+                            product={{
+                                id: product.id,
+                                title: product.name,
+                                description: product.description,
+                                price: product.price.toString(),
+                                discount_price: product.discount_price?.toString(),
+                                image: product.image,
+                                rating: product.rating,
+                                reviews_count: product.reviews,
+                                store: 1, // Fallback
+                                category: product.category
+                            }}
                         />
                     </div>
                 ))}

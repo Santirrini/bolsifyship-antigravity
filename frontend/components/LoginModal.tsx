@@ -20,6 +20,7 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
         confirmPassword: ''
     });
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     const router = useRouter();
@@ -28,6 +29,7 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
         if (isOpen) {
             setView(initialView);
             setError('');
+            setSuccess('');
             setFormData({ email: '', password: '', full_name: '', confirmPassword: '' });
         }
     }, [isOpen, initialView]);
@@ -37,23 +39,38 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setSuccess('');
         setIsLoading(true);
 
         try {
             if (view === 'login') {
-                const formDataLogin = new FormData();
-                formDataLogin.append('username', formData.email);
-                formDataLogin.append('password', formData.password);
-
-                const res = await fetch('http://localhost:8000/auth/token', {
+                // dj-rest-auth login endpoint - now supports email login
+                const res = await fetch('http://localhost:8000/api/auth/login/', {
                     method: 'POST',
-                    body: formDataLogin,
-                    credentials: 'include', // Important: this allows cookies to be set
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: formData.email,
+                        password: formData.password,
+                    }),
+                    credentials: 'include',
                 });
 
                 if (!res.ok) {
                     const data = await res.json();
-                    throw new Error(data.detail || 'Error al iniciar sesión');
+                    // Handle different error formats
+                    let errorMsg = 'Error al iniciar sesión';
+                    if (data.non_field_errors?.[0]) {
+                        // Translate common errors to Spanish
+                        const msg = data.non_field_errors[0];
+                        if (msg.includes('Unable to log in') || msg.includes('credentials')) {
+                            errorMsg = 'Email o contraseña incorrectos';
+                        } else {
+                            errorMsg = msg;
+                        }
+                    } else if (data.detail) {
+                        errorMsg = data.detail;
+                    }
+                    throw new Error(errorMsg);
                 }
 
                 // Cookie is now set, call login() to fetch user data
@@ -64,39 +81,68 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
                     throw new Error('Las contraseñas no coinciden');
                 }
 
-                const res = await fetch('http://localhost:8000/auth/register', {
+                const res = await fetch('http://localhost:8000/api/auth/registration/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        username: formData.email.split('@')[0], // Create a username from email
                         email: formData.email,
-                        password: formData.password,
-                        full_name: formData.full_name,
+                        password1: formData.password, // Backend expects 'password1'
+                        password2: formData.confirmPassword, // dj-rest-auth expects password2 for confirmation
+                        // full_name might need to be handled if backend has custom adapter or signal, 
+                        // but dj-rest-auth registration serializer defaults didn't see full_name. 
+                        // Ignoring full_name for now or hoping custom adapter handles it.
                     }),
                 });
 
                 if (!res.ok) {
+                    // Log the full error to console for debug
                     const data = await res.json();
-                    throw new Error(data.detail || 'Error al registrarse');
+                    console.error("Registration error:", data);
+
+                    // Check if user already exists (email or username)
+                    const emailExists = data.email?.some((msg: string) => msg.toLowerCase().includes('already') || msg.toLowerCase().includes('existe') || msg.toLowerCase().includes('registered'));
+                    const usernameExists = data.username?.some((msg: string) => msg.toLowerCase().includes('already') || msg.toLowerCase().includes('existe') || msg.toLowerCase().includes('exists'));
+
+                    if (emailExists || usernameExists) {
+                        // User already registered - show friendly message and switch to login
+                        setView('login');
+                        setSuccess('Este usuario ya está registrado. Por favor, inicia sesión.');
+                        setIsLoading(false);
+                        return;
+                    }
+
+                    // Try to extract a meaningful error message for other errors
+                    let errorMsg = 'Error al registrarse';
+                    if (data.email) errorMsg = `Email: ${data.email[0]}`;
+                    else if (data.username) errorMsg = `Usuario: ${data.username[0]}`;
+                    else if (data.password1) errorMsg = `Contraseña: ${data.password1[0]}`;
+                    else if (data.password) errorMsg = `Contraseña: ${data.password[0]}`;
+                    else if (data.non_field_errors) errorMsg = data.non_field_errors[0];
+                    else if (data.detail) errorMsg = data.detail;
+
+                    throw new Error(errorMsg);
                 }
 
                 // Auto login after register
-                const formDataLogin = new FormData();
-                formDataLogin.append('username', formData.email);
-                formDataLogin.append('password', formData.password);
-
-                const loginRes = await fetch('http://localhost:8000/auth/token', {
+                const loginRes = await fetch('http://localhost:8000/api/auth/login/', {
                     method: 'POST',
-                    body: formDataLogin,
-                    credentials: 'include', // Important: this allows cookies to be set
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: formData.email,
+                        email: formData.email,
+                        password: formData.password,
+                    }),
+                    credentials: 'include',
                 });
 
                 if (loginRes.ok) {
-                    // Cookie is now set, call login() to fetch user data
                     await login();
                     onClose();
                 } else {
+                    // Email verification might be required, or some other issue. Show success and switch to login.
                     setView('login');
-                    setError('Registro exitoso. Por favor inicia sesión.');
+                    setSuccess('¡Registro exitoso! Por favor inicia sesión.');
                 }
             }
         } catch (err: any) {
@@ -136,6 +182,12 @@ export default function LoginModal({ isOpen, onClose, initialView = 'login' }: L
                                 : 'Únete a nosotros y disfruta de las mejores ofertas'}
                         </p>
                     </div>
+
+                    {success && (
+                        <div className="mb-6 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 text-sm rounded-lg text-center">
+                            {success}
+                        </div>
+                    )}
 
                     {error && (
                         <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg text-center">

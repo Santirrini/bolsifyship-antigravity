@@ -30,7 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const res = await api.get('/auth/users/me');
+                // dj-rest-auth provides /api/auth/user/ for current user
+                const res = await api.get('/api/auth/user/');
                 setUser(res.data);
             } catch (error) {
                 // Not logged in or session expired
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = async () => {
         // Refresh user data immediately
         try {
-            const res = await api.get('/auth/users/me');
+            const res = await api.get('/api/auth/user/');
             const userData = res.data;
             setUser(userData);
 
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logout = async () => {
         try {
-            await api.post('/auth/logout');
+            await api.post('/api/auth/logout/');
         } catch (error) {
             console.error("Logout failed", error);
         }

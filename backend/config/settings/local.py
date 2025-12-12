@@ -19,6 +19,13 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "testserver"]  # noqa: S10
 # ------------------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+
+# Local development: Skip email verification for easier testing
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+# Allow login with email or username
+ACCOUNT_LOGIN_METHODS = {"email", "username"}
 
 # CACHES
 # ------------------------------------------------------------------------------

@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { catalogService, Product } from '@/services/catalog';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useUI } from '@/context/UIContext';
 import { ShoppingCart, Search, Menu, ArrowRight } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { openLoginModal } = useUI();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -56,9 +58,12 @@ export default function HomePage() {
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full"></span>
               </Link>
               <ThemeToggle />
-              <Link href="/login" className="ml-2 px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+              <button
+                onClick={() => openLoginModal('login')}
+                className="ml-2 px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              >
                 Login
-              </Link>
+              </button>
             </div>
           </div>
         </div>

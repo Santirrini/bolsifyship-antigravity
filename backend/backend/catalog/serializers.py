@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from django.conf import settings
+
 from .models import Product, Store, Banner
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -10,6 +12,8 @@ class StoreSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source="store.name", read_only=True)
 
+    images = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
         fields = [
@@ -19,6 +23,36 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku", "images", "created_at"
         ]
         read_only_fields = ["rating", "reviews_count", "sales_count", "created_at"]
+
+    def get_images(self, obj):
+        if not obj.images:
+            return []
+        
+        request = self.context.get("request")
+        if not request:
+            return obj.images
+            
+        urls = []
+        for img_path in obj.images:
+            if not img_path:
+                continue
+            
+            # If it's already an absolute URL, leave it alone
+            if img_path.startswith("http://") or img_path.startswith("https://"):
+                urls.append(img_path)
+                continue
+                
+            # Construct the relative media URL
+            # If stored as "products/foo.jpg", become "/media/products/foo.jpg"
+            if not img_path.startswith(settings.MEDIA_URL) and not img_path.startswith("/"):
+                # Clean path interaction
+                url_path = f"{settings.MEDIA_URL}{img_path}"
+            else:
+                url_path = img_path
+                
+            urls.append(request.build_absolute_uri(url_path))
+            
+        return urls
 
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:

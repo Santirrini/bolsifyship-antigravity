@@ -26,9 +26,10 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    supabase_user_id = Column(String, unique=True, index=True, nullable=True) # New: Link to Supabase Auth UUID
     email = Column(String, unique=True, index=True)
     full_name = Column(String)
-    hashed_password = Column(String)
+    hashed_password = Column(String, nullable=True) # Making nullable as we transition
     is_active = Column(Integer, default=1) # 1 for active, 0 for inactive
     is_admin = Column(Integer, default=0) # 0 for regular user, 1 for admin
     role = Column(String, default="customer") # "admin", "seller", "customer"

@@ -7,7 +7,7 @@ from schemas import ProductCreate, ProductUpdate
 from schemas import Product as ProductSchema, AdminStats, Order as OrderSchema, User as UserSchema
 from routers.auth import get_current_user
 from pydantic import BaseModel
-from crud import pwd_context
+import crud
 
 router = APIRouter(
     prefix="/admin",
@@ -164,18 +164,28 @@ def create_user_admin(user: UserCreateAdmin, db: Session = Depends(get_db), curr
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    hashed_password = pwd_context.hash(user.password)
-    db_user = User(
+    # Use crud.create_user to handle Supabase registration
+    # Validating schema conversion (UserCreateAdmin -> UserCreate)
+    # UserCreate needs email, fullname, password. UserCreateAdmin has them.
+    from schemas import UserCreate
+    user_create = UserCreate(
         email=user.email,
-        hashed_password=hashed_password,
-        full_name=user.full_name,
-        is_admin=user.is_admin,
-        is_active=1
+        password=user.password,
+        full_name=user.full_name
     )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    
+    try:
+        db_user = crud.create_user(db, user_create)
+        
+        # Update admin status
+        db_user.is_admin = user.is_admin
+        db_user.is_active = 1
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.put("/users/{user_id}", response_model=UserSchema)
 def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_admin)):

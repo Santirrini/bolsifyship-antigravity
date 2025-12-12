@@ -4,14 +4,14 @@ from typing import List
 import models, schemas
 from database import SessionLocal
 from routers.auth import get_current_user, get_db
-from passlib.context import CryptContext
+
 
 router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context removed
 
 @router.put("/me", response_model=schemas.User)
 def update_user_me(user_update: schemas.UserUpdate, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -24,7 +24,10 @@ def update_user_me(user_update: schemas.UserUpdate, current_user: models.User = 
             raise HTTPException(status_code=400, detail="Email already registered")
         current_user.email = user_update.email
     if user_update.password is not None:
-        current_user.hashed_password = pwd_context.hash(user_update.password)
+        raise HTTPException(
+            status_code=400, 
+            detail="Password update not supported via this endpoint. Use Supabase Auth password reset flow."
+        )
     
     db.commit()
     db.refresh(current_user)

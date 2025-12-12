@@ -6,7 +6,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Use DATABASE_URL env var if available (common in production), else fallback to local SQLite
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'bolsifyshop.db')}")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+if not SQLALCHEMY_DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set")
 
 connect_args = {}
 if "sqlite" in SQLALCHEMY_DATABASE_URL:

@@ -1,12 +1,21 @@
 import requests
 import json
+import time
+import random
+import string
 
 BASE_URL = "http://localhost:8000"
 
+def get_random_string(length=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
+random_email = f"bolsify.test.{get_random_string()}@gmail.com"
+
 def test_register():
-    print("Testing Register...")
+    print(f"Testing Register with {random_email}...")
     payload = {
-        "email": "test_user@example.com",
+        "email": random_email,
         "password": "password123",
         "full_name": "Test User"
     }
@@ -26,9 +35,9 @@ def test_register():
         return False
 
 def test_login():
-    print("\nTesting Login...")
+    print(f"\nTesting Login with {random_email}...")
     payload = {
-        "username": "test_user@example.com",
+        "username": random_email,
         "password": "password123"
     }
     try:
@@ -39,6 +48,7 @@ def test_login():
             return token
         else:
             print("Login Failed:", response.status_code, response.text)
+            # If login fails (e.g. email not confirmed), we can't test 'me'
             return None
     except Exception as e:
         print("Login Error:", e)
@@ -68,8 +78,8 @@ def test_search():
         if response.status_code == 200:
             results = response.json()
             print(f"Search Success. Found {len(results)} results.")
-            if len(results) > 0:
-                print("First result:", results[0]['name'])
+            # if len(results) > 0:
+            #     print("First result:", results[0]['name'])
             return True
         else:
             print("Search Failed:", response.status_code, response.text)
@@ -80,6 +90,8 @@ def test_search():
 
 if __name__ == "__main__":
     if test_register():
+        # Wait a bit for async db write if any
+        time.sleep(1)
         token = test_login()
         if token:
             test_me(token)

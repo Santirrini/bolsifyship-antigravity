@@ -91,15 +91,16 @@ async def get_current_user(request: Request, token: Optional[str] = Depends(oaut
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # Register with Supabase directly
     try:
-        auth_response = supabase.auth.sign_up({
-            "email": user.email,
-            "password": user.password,
-            "options": {
+        # Use kwargs for better compatibility
+        auth_response = supabase.auth.sign_up(
+            email=user.email,
+            password=user.password,
+            options={
                 "data": {
                     "full_name": user.full_name
                 }
             }
-        })
+        )
         
         if not auth_response.user and not auth_response.session:
              raise HTTPException(status_code=400, detail="Registration failed")

@@ -2,49 +2,98 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from datetime import datetime
 import models, schemas
-from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+from supabase_client import supabase
+
+
+
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
 
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    hashed_password = pwd_context.hash(user.password)
-    db_user = models.User(email=user.email, full_name=user.full_name, hashed_password=hashed_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    db.refresh(db_user)
-    return db_user
+    # Register with Supabase
+    try:
+        # Note: If called from outside (no request context), we might not want to sign in?
+        # But sign_up signs in by default.
+        auth_response = supabase.auth.sign_up({
+            "email": user.email,
+            "password": user.password,
+            "options": {
+                "data": {
+                    "full_name": user.full_name
+                }
+            }
+        })
+        
+        if not auth_response.user:
+             # If user exists in supabase but not local validation caught it?
+             raise Exception("Supabase registration failed")
+
+        db_user = models.User(
+            email=user.email,
+            full_name=user.full_name,
+            supabase_user_id=auth_response.user.id,
+            hashed_password=None # Not storing local password anymore
+        )
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    except Exception as e:
+        print(f"Error creating user: {e}")
+        # If duplicated, usually get_user_by_email catches it first, 
+        # but race conditions or out-of-sync DBs exist.
+        raise e
 
 def create_seller_and_store(db: Session, user: schemas.UserCreate, store: schemas.StoreCreate):
-    # 1. Create User
-    hashed_password = pwd_context.hash(user.password)
-    db_user = models.User(
-        email=user.email, 
-        full_name=user.full_name, 
-        hashed_password=hashed_password,
-        role="seller"
-    )
-    db.add(db_user)
-    db.flush() # Get ID
-    
-    # 2. Create Store
-    db_store = models.Store(
-        name=store.name,
-        description=store.description,
-        logo_url=store.logo_url,
-        owner_id=db_user.id,
-        created_at=datetime.utcnow().isoformat()
-    )
-    db.add(db_store)
-    
-    # 3. Commit
-    db.commit()
-    db.refresh(db_user)
-    db.refresh(db_store)
-    return db_user, db_store
+    try:
+        # 1. Register with Supabase
+        auth_response = supabase.auth.sign_up({
+            "email": user.email,
+            "password": user.password,
+            "options": {
+                "data": {
+                    "full_name": user.full_name
+                }
+            }
+        })
+        
+        if not auth_response.user:
+             raise Exception("Supabase registration failed")
+
+        db_user = models.User(
+            email=user.email,
+            full_name=user.full_name,
+            supabase_user_id=auth_response.user.id,
+            hashed_password=None,
+            role="seller"
+        )
+        db.add(db_user)
+        db.flush() # Get ID
+        
+        # 2. Create Store
+        db_store = models.Store(
+            name=store.name,
+            description=store.description,
+            logo_url=store.logo_url,
+            owner_id=db_user.id,
+            created_at=datetime.utcnow().isoformat()
+        )
+        db.add(db_store)
+        
+        # 3. Commit
+        db.commit()
+        db.refresh(db_user)
+        db.refresh(db_store)
+        return db_user, db_store
+
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating seller and store: {e}")
+        raise e
 
 def get_products(
     db: Session, 

@@ -17,7 +17,8 @@ export default function CategoriesPage() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch("http://localhost:8000/categories/");
+                const res = await fetch("http://localhost:8000/api/categories/");
+
                 if (res.ok) {
                     const data = await res.json();
                     setCategories(data);

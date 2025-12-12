@@ -64,19 +64,23 @@ class CategoryViewSet(viewsets.ViewSet):
             product = Product.objects.filter(category=category_name, is_active=True, image__isnull=False).first()
             
             image_url = None
-            if product:
-                # Use the ProductSerializer logic to get the absolute URL effectively
-                # or just do a simple check since we are inside the view
-                if product.image:
-                    try:
+            if product and product.image:
+                try:
+                    # Check if the image path is already an absolute URL (external)
+                    image_path = str(product.image.name) if hasattr(product.image, 'name') else str(product.image)
+                    if image_path.startswith("http://") or image_path.startswith("https://"):
+                        image_url = image_path
+                    else:
+                        # For local files, build the absolute URL
                         image_url = request.build_absolute_uri(product.image.url)
-                    except:
-                        image_url = None
+                except:
+                    image_url = None
             
             data.append({
                 "name": category_name,
                 "image": image_url
             })
+
             
         return Response(data)
 

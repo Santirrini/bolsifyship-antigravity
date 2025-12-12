@@ -19,6 +19,25 @@ class ProductViewSet(viewsets.ModelViewSet):
     search_fields = ["name", "description", "sku"]
     ordering_fields = ["price", "rating", "created_at"]
 
+    @viewsets.action(detail=False, methods=["GET"], url_path="my_products")
+    def my_products(self, request):
+        """
+        Return products belonging to the stores owned by the current user.
+        """
+        if not request.user.is_authenticated:
+             return viewsets.Response(status=401)
+        
+        # Filter products where the store's owner is the current user
+        queryset = self.filter_queryset(self.get_queryset()).filter(store__owner=request.user)
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return viewsets.Response(serializer.data)
+
 class BannerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Banner.objects.filter(is_active=True).order_by("order")
     serializer_class = BannerSerializer

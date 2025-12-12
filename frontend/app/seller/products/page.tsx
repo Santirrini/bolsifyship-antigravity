@@ -24,7 +24,7 @@ export default function SellerProducts() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await api.get("/seller/products");
+                const response = await api.get("/products/my_products/");
                 setProducts(response.data);
             } catch (error: any) {
                 console.error("Error fetching products:", error);
